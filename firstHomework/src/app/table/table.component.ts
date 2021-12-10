@@ -61,7 +61,6 @@ export class TableComponent  {
   }
 
   deleteStudent(id: number): void{
-    console.log(`id: ${id}, modalId:${this.modal.id}`);
 
     const studentToDelete = this.students.findIndex((stud) => stud.id === id);
     this.students[studentToDelete].deleted = true;
@@ -94,12 +93,10 @@ export class TableComponent  {
   find(value: string): void{
      for (const student of this.students) {
        if (student.lastName === value || student.name === value){
-         console.log(student);
          this.input = "";
          this.findedStudents.push(student.id);
        }
      }
-    console.log(value);
     this.input = "";
 
   }
@@ -128,17 +125,16 @@ export class TableComponent  {
   filterScore(range: string): void{
     this.clearFilter();
     const rAnge = this.getRange(range);
-    console.log(rAnge);
 
     for (const student of this.students) {
       if (student.score <= rAnge.max && student.score >= rAnge.min){
-        console.log("Не подходит");
+        this.input = "";
       } else {
-        console.log(student);
+
         this.notInRange.push(student.id);
       }
     }
-   this.input = "";
+    this.input = "";
 
 
   }
@@ -146,18 +142,18 @@ export class TableComponent  {
   filterDate(range: string): void{
     this.clearFilter();
     const rAnge = this.getRange(range);
-    console.log(rAnge);
+
     for (const student of this.students) {
      const birthDate = this.getCorrectDateFormat(student.birthDate);
 
       if (birthDate <= rAnge.max && birthDate >= rAnge.min){
-        console.log("Не подходит");
+        this.input = "";
       } else {
-        console.log(student);
+
         this.notInRange.push(student.id);
       }
     }
-
+    this.input = "";
   }
 
   clearFilter(): void{
