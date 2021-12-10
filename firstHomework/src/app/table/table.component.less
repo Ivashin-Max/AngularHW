@@ -120,6 +120,7 @@ button{
   }
 
   .modal{
+    position: relative;
     background-color: #fff;
     width: 500px;
     height: 150px;
@@ -144,6 +145,7 @@ button{
     background-color: @color_green;
   }
   .red{
+
     background-color: @color_red;
     &:hover{
       background-color:white;
@@ -151,6 +153,13 @@ button{
       transition:background-color 0.4s ease;
       border: 1px solid @color_red;
     }
+  }
+  .close{
+    position: relative;
+    top: 0px;
+    right: -210px;
+    width: 20px;
+    height: 10px;
   }
 .deleted{
 display: none;
@@ -187,7 +196,7 @@ display: none;
     }
   }
   & th{
-
+    width: 150px;
     height: 50px;
   }
   & td{

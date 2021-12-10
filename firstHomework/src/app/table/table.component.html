@@ -1,10 +1,14 @@
 <h1>Таблица студентов</h1>
 <div class="wrap">
   <div class="form">
-    <input  type="text" [(ngModel)] ="input" placeholder="{{placeholder}}">
+    <input *ngIf="selected==='Поиск'|| selected==='Фильтр по баллам'" type="text" [(ngModel)] ="input" placeholder="{{placeholder}}">
+    <span *ngIf="selected==='Фильтр по дате'">Начальная дата:</span>
+    <input *ngIf="selected==='Фильтр по дате'" type="date" [(ngModel)] ="minDate" >
+    <span *ngIf="selected==='Фильтр по дате'">Конечная дата:</span>
+    <input *ngIf="selected==='Фильтр по дате'" type="date" [(ngModel)] ="maxDate">
     <button 
       (click)="selected==='Поиск'?find(input):
-               selected==='Фильтр по дате'?filterDate(input):
+               selected==='Фильтр по дате'?filterDate(minDate, maxDate):
                                           filterScore(input)"
     >
       {{selected}}
@@ -55,10 +59,11 @@
 </div>
   <div *ngIf="modal.isShown" class="shown">
     <div class="modal">
-      <span>Вы уверены, что хотите удалить {{modal.name}} {{modal.lastName}} ?</span>
+      <button  class="red close" (click)="hideModal()">X</button>
+      <span>{{modal.message}}</span>
       <div>
-        <button class="green"(click)="deleteStudent(modal.id)">Да</button>
-        <button class="red" (click)="hideModal()">Нет</button>
+        <button *ngIf="modal.error === false" class="green"(click)="deleteStudent(modal.id)">Да</button>
+        <button *ngIf="modal.error === false" class="red" (click)="hideModal()">Нет</button>
       </div>
     </div>
   </div>

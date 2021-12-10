@@ -24,6 +24,8 @@ export class TableComponent  {
 
   students = studentsArr.students;
   input = "";
+  minDate = "";
+  maxDate = "";
   checkboxSelected = true;
   placeholder = "Введите имя или фамилию";
   selected = "Поиск";
@@ -31,16 +33,16 @@ export class TableComponent  {
     name:"",
     lastName:"",
     id:0,
-    isShown: false
+    isShown: false,
+    message:"",
+    error: false
   };
   findedStudents: number[] = [];
   notInRange: number[] = [];
 
+
   onChange(event: string): void{
     this.selected = event;
-    if (event === "Фильтр по дате"){
-      this.placeholder = "Введите диапозон дат в формате ДД.ММ.ГГГГ-ДД.ММ.ГГГГ";
-    }
     if (event === "Поиск"){
       this.placeholder = "Введите имя или фамилию";
     }
@@ -54,6 +56,13 @@ export class TableComponent  {
     this.modal.name = name ;
     this.modal.lastName = lastName;
     this.modal.isShown = true;
+    this.modal.error = false;
+    this.modal.message = `Вы действительно хотите удалить ${lastName} ${name}?`;
+  }
+  errorModal(message: string): void{
+    this.modal.isShown = true;
+    this.modal.error = true;
+    this.modal.message = message;
   }
 
   hideModal(): void{
@@ -84,19 +93,25 @@ export class TableComponent  {
       };
     }
 
-    return function (a: Istudent, b: Istudent): number {
-        const result = (a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0;
-        return result;
-    };
+    return  (a: Istudent, b: Istudent): number =>  ((a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0);
+
   }
 
   find(value: string): void{
+    if (value === ""){
+      this.errorModal("Введите данные");
+    } else {
+    let counter = 0;
      for (const student of this.students) {
        if (student.lastName === value || student.name === value){
-         this.input = "";
          this.findedStudents.push(student.id);
+         counter++;
        }
      }
+     if (counter === 0 ){
+      this.errorModal("Такого студента нет");
+     }
+    }
     this.input = "";
 
   }
@@ -104,18 +119,11 @@ export class TableComponent  {
   getRange(range: string): { min: number, max: number }{
     const correctRange = { min:0, max:0 };
     const splittedRange = range.trim().split("-");
-    if (range.length < 5){
+
      correctRange.min = +splittedRange[0];
      correctRange.max = +splittedRange[1];
      return correctRange;
-    }
-    const correctDateA = this.getCorrectDateFormat(splittedRange[0]);
-    const correctDateB = this.getCorrectDateFormat(splittedRange[1]);
-
-    correctRange.min = correctDateA;
-    correctRange.max = correctDateB;
-    return correctRange;
-   }
+  }
 
    getCorrectDateFormat(stringDate: string): number{
     const correctDate = new Date(stringDate.split(".").reverse().join("-"));
@@ -126,39 +134,55 @@ export class TableComponent  {
     this.clearFilter();
     const rAnge = this.getRange(range);
 
-    for (const student of this.students) {
-      if (student.score <= rAnge.max && student.score >= rAnge.min){
-        this.input = "";
-      } else {
 
-        this.notInRange.push(student.id);
+    if (isNaN(rAnge.min) || isNaN(rAnge.max) || (rAnge.min <= 0 || rAnge.max <= 0) || (rAnge.min > 10 || rAnge.max > 10)){
+      this.errorModal("Некоректный ввод, попробуйте ещё раз");
+    } else {
+      for (const student of this.students) {
+        if (student.score <= rAnge.max && student.score >= rAnge.min){
+          this.input = "";
+        } else {
+          this.notInRange.push(student.id);
+        }
       }
     }
     this.input = "";
-
-
   }
 
-  filterDate(range: string): void{
+  filterDate(minDate: string, maxDate: string): void{
+
+
     this.clearFilter();
-    const rAnge = this.getRange(range);
+    const correctMinDate = +(new Date(minDate));
+    const correctMaxDate = +(new Date(maxDate));
+
+    if (correctMinDate > correctMaxDate || (minDate === "" || maxDate === "")){
+      this.errorModal("Некоректный ввод, попробуйте ещё раз");
+    } else {
 
     for (const student of this.students) {
      const birthDate = this.getCorrectDateFormat(student.birthDate);
 
-      if (birthDate <= rAnge.max && birthDate >= rAnge.min){
-        this.input = "";
-      } else {
 
+      if (birthDate <= correctMaxDate && birthDate >= correctMinDate){
+        // this.input = "";
+      } else {
         this.notInRange.push(student.id);
       }
     }
-    this.input = "";
+}
+
   }
 
   clearFilter(): void{
     this.findedStudents.length = 0;
     this.notInRange.length = 0;
+  }
+
+  clearInput(): void{
+    this.input = "";
+    this.maxDate = "";
+    this.minDate = "";
   }
 }
 
