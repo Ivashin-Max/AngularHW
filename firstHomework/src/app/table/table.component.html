@@ -1,0 +1,64 @@
+<h1>Таблица студентов</h1>
+<div class="wrap">
+  <div class="form">
+    <input  type="text" [(ngModel)] ="input" placeholder="{{placeholder}}">
+    <button 
+      (click)="selected==='Поиск'?find(input):
+               selected==='Фильтр по дате'?filterDate(input):
+                                          filterScore(input)"
+    >
+      {{selected}}
+    </button>
+    <button (click)="clearFilter()">Сбросить все фильтры</button>
+    <div class="toggleLabel">
+      <label for="switch">Подсветка плохих оценок</label>
+      <input 
+      class="toggle" 
+      type="checkbox"
+      [checked]="true"
+      (change)="checkboxSelected = !checkboxSelected"
+      id="switch"
+      >
+    </div>
+    <select [ngModel]="selected" (ngModelChange)="onChange($event)"  > 
+      <option value='Поиск'>Поиск по имени или фамилии</option> 
+      <option value='Фильтр по дате'>Фильтрация по дате рождения</option> 
+      <option value='Фильтр по баллам'>Фильтрация по среднему   баллу</option> 
+      </select>
+  </div>
+  <div class="table">
+    <table>
+      <tr>
+        <th class="pointer" (click)="sort('lastName')">Фамилия</th>
+        <th class="pointer" (click)="sort('name')">Имя</th>
+        <th class="pointer" (click)="sort('patronymic')">Отчество</th>
+        <th class="pointer" (click)="sort('birthDate')">Дата рождения</th>
+        <th class="pointer" (click)="sort('score')">Средний балл</th>
+      </tr>
+      <tr 
+        *ngFor="let student of students;  let j = odd"
+        [ngClass]="{'three': student.score<3 && checkboxSelected,
+                    'deleted': student.deleted,
+                    'finded': findedStudents.includes(student.id),
+                  'notInRange':notInRange.includes(student.id),
+                'table_odd':j }"
+        > 
+          <td>{{student.lastName}}</td>
+          <td>{{student.name}}</td>
+          <td>{{student.patronymic}}</td>
+          <td>{{student.birthDate}}</td>
+          <td>{{student.score}}</td>
+          <td><button (click)="showModal(student.id, student.lastName, student.name)">&times;</button></td>
+      </tr>
+    </table>
+  </div>
+</div>
+  <div *ngIf="modal.isShown" class="shown">
+    <div class="modal">
+      <span>Вы уверены, что хотите удалить {{modal.name}} {{modal.lastName}} ?</span>
+      <div>
+        <button class="green"(click)="deleteStudent(modal.id)">Да</button>
+        <button class="red" (click)="hideModal()">Нет</button>
+      </div>
+    </div>
+  </div>
