@@ -4,7 +4,6 @@ import studentsArr from "../../assets/studentList.json";
 
 
 export interface Istudent{
-    [k: string]: boolean | number | string;
       id: number;
       lastName: string;
       name: string;
@@ -76,14 +75,19 @@ export class TableComponent  {
     this.modal.isShown = false;
   }
 
+  hasKey<O>(obj: O, key: PropertyKey): key is keyof O {
+    return key in obj;
+  }
 
   sort(property: string): void{
    this.students.sort(this.dynamicSort(property));
   }
 
   dynamicSort(property: string): (a: Istudent, b: Istudent) => number {
+
     if (property === "birthDate"){
       return (a: Istudent, b: Istudent): number => {
+
         const correctDateA = this.getCorrectDateFormat(a[property]);
         const correctDateB = this.getCorrectDateFormat(b[property]);
 
@@ -93,7 +97,13 @@ export class TableComponent  {
       };
     }
 
-    return  (a: Istudent, b: Istudent): number =>  ((a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0);
+    return  (a: Istudent, b: Istudent): number =>  {
+      if (this.hasKey(a, property) && this.hasKey(b, property)){
+        const result = ((a[property] < b[property]) ? -1 : (a[property] > b[property]) ? 1 : 0);
+        return result;
+      }
+      return 0;
+    };
 
   }
 
