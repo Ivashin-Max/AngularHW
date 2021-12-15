@@ -1,6 +1,4 @@
-import { Component } from "@angular/core";
-
-import studentsArr from "../../assets/studentList.json";
+import { Component, Input } from "@angular/core";
 
 
 export interface Istudent{
@@ -20,8 +18,7 @@ export interface Istudent{
   styleUrls: ["./table.component.less"]
 })
 export class TableComponent  {
-
-  students = studentsArr.students;
+  @Input() students: Istudent[] = [];
   input = "";
   minDate = "";
   maxDate = "";
@@ -46,7 +43,7 @@ export class TableComponent  {
       this.placeholder = "Введите имя или фамилию";
     }
     if (event === "Фильтр по баллам"){
-      this.placeholder = "Введите диапозон средних баллов в формате 1-10";
+      this.placeholder = "Введите диапозон баллов в формате 1-6";
     }
     }
 

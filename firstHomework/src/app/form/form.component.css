@@ -1,0 +1,130 @@
+.newStudent {
+  width: max-content;
+  margin-left: 20px;
+}
+input,
+button {
+  display: block;
+  width: 280px;
+  height: 40px;
+  border: 1px solid #535e692a;
+}
+input {
+  border: 1px solid #535e692a;
+  box-shadow: inset 0px 4px 4px rgba(0, 0, 0, 0.082);
+  border-radius: 2px;
+  padding-left: 10px;
+  margin: 5px 0;
+}
+input:focus {
+  box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.25);
+  transition: 0.4s ease;
+  opacity: 1;
+  outline: none;
+}
+.tooltip {
+  color: #a7a6a6;
+  font-size: 12px;
+  display: block;
+  margin: 5px 0 10px;
+  padding-left: 5px;
+}
+.errorText {
+  color: red;
+}
+button {
+  margin: 11px 0;
+  border-radius: 10px;
+  color: white;
+  transition: 0.4s ease;
+  font-size: 14px;
+  background-color: #39aea8;
+}
+button:hover {
+  background-color: white;
+  color: #39AEA9;
+  transition: background-color 0.4s ease;
+  border: 1px solid #39AEA9;
+}
+.yellow {
+  background-color: #cacd3ade;
+}
+.yellow:hover {
+  background-color: white;
+  color: #cacd3ade;
+  border-color: #cacd3ade;
+}
+p {
+  font-size: 20px;
+  font-weight: bold;
+  text-align: center;
+  margin: 40px 0 50px;
+}
+.shown {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: rgba(0, 0, 0, 0.521);
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+}
+.modal {
+  position: relative;
+  background-color: #fff;
+  width: 500px;
+  height: 220px;
+  border-radius: 10px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+}
+.modal p {
+  margin: 10px;
+}
+.modal span {
+  font-size: 14px;
+}
+.modal div {
+  display: flex;
+  margin-top: 20px;
+  width: 250px;
+  justify-content: space-around;
+}
+.modal button {
+  width: 108px;
+  border-radius: 5px;
+  height: 30px;
+}
+.disabled {
+  cursor: not-allowed;
+  background-color: #a7a6a6;
+  border: 1px solid #a7a6a6;
+}
+.disabled:hover {
+  background-color: #a7a6a6;
+  border: 1px solid #a7a6a6;
+  color: white;
+}
+.green {
+  background-color: #39aea8;
+}
+.red {
+  background-color: #AE393F;
+}
+.red:hover {
+  background-color: white;
+  color: #AE393F;
+  transition: background-color 0.4s ease;
+  border: 1px solid #AE393F;
+}
+.close {
+  position: relative;
+  top: 0px;
+  right: -210px;
+  width: 20px;
+  height: 10px;
+}
