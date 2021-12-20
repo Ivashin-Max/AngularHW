@@ -2,16 +2,28 @@
 @color_green:#39aea8;
 @color_text:#2B476A;
 @color_grey: #a7a6a6;
+@color_yellow:#cacd3ade;
 .newStudent{
   width: max-content;
   margin-left: 20px;
+  & span{
+    margin-bottom: 20px;
+    display: block;
+  }
 }
 input, button{
   display: block;
   width: 280px;
 	height: 40px;
 	border: 1px solid #535e692a;
-  // margin: 10px 0;
+
+}
+.invalid{
+  border-color: @color_red;
+  box-shadow:0 0 10px @color_red;
+}
+.required{
+  border-color: @color_yellow
 }
 input{
 
@@ -21,7 +33,6 @@ input{
 	padding-left: 10px;
   margin: 5px 0;
   &:focus{
-		box-shadow: 0px 3px 10px rgba(0, 0, 0, 0.25);
 		transition: 0.4s ease;
 		opacity: 1;
     outline: none;
@@ -55,19 +66,19 @@ button{
     }
 }
 .yellow{
-  background-color: #cacd3ade;
+  background-color: @color_yellow;
 
   &:hover{
     background-color: white;
-    color: #cacd3ade;
-    border-color: #cacd3ade;
+    color: @color_yellow;
+    border-color: @color_yellow;
   }
 }
 p{
   font-size: 20px;
   font-weight: bold;
   text-align: center;
-  margin: 40px 0 50px;
+  margin: 40px 0 20px;
 }
 
 .shown{

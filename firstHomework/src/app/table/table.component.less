@@ -2,6 +2,7 @@
 @color_green:#39aea8;
 @color_text:#2B476A;
 @color_grey: #cdcdcd;
+@color_yellow: #cacd3ade;
 h1{
   text-align: center;
   font-size: 20px;
@@ -11,7 +12,7 @@ h1{
 .wrap{
   display: flex;
   height: 80vh;
-  width: 70vw;
+  // width: 70vw;
 }
 input, button, select{
   display: block;
@@ -38,6 +39,7 @@ input[type=checkbox] {
 input[type=checkbox]:focus {
   outline: 0;
 }
+
 .toggle {
   height: 32px;
   width: 52px;
@@ -195,7 +197,8 @@ display: none;
     border-collapse: collapse;
   }
 
-  & button{
+
+  &_del{
     background-color: @color_red;
     width: 20px;
     height: 20px;
@@ -208,14 +211,29 @@ display: none;
       border: 1px solid @color_red;
     }
   }
+
+
+  &_edit{
+    background-color: @color_yellow;
+    width: 120px;
+    height: 25px;
+    border-radius: 5px;
+    margin: 5px 0;
+    &:hover{
+      background-color: white;
+      color: @color_yellow;
+      border-color: @color_yellow;
+    }
+  }
   & th{
     width: 150px;
     height: 50px;
   }
   & td{
 
-    width: 150px;
+    width: max-content;
     text-align: center;
+    padding-left: 10px;
     &:last-child{
       width: max-content;
     }

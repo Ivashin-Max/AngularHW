@@ -1,5 +1,5 @@
-import { Component, Input } from "@angular/core";
-
+import { Component, Input, ViewChild } from "@angular/core";
+import { FormComponent } from "../form/form.component";
 
 export interface Istudent{
       id: number;
@@ -19,6 +19,7 @@ export interface Istudent{
 })
 export class TableComponent  {
   @Input() students: Istudent[] = [];
+  @ViewChild(FormComponent) private _form: FormComponent | undefined;
   input = "";
   minDate = "";
   maxDate = "";
@@ -36,7 +37,6 @@ export class TableComponent  {
   findedStudents: number[] = [];
   notInRange: number[] = [];
 
-
   onChange(event: string): void{
     this.selected = event;
     if (event === "Поиск"){
@@ -45,6 +45,10 @@ export class TableComponent  {
     if (event === "Фильтр по баллам"){
       this.placeholder = "Введите диапозон баллов в формате 1-6";
     }
+    }
+
+    pickStudent(id: number): void{
+      this._form?.pickStudent(id);
     }
 
   showModal(id: number, name: string, lastName: string): void{

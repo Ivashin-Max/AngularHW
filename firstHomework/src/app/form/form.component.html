@@ -1,54 +1,91 @@
 <div class="wrap">
-  <div *ngIf="modal.new" class="newStudent">
-    <p>Добавление нового студента</p>
+  <div  class="newStudent">
+    <p *ngIf="!edit">Добавление нового студента</p>
+    <p *ngIf="edit">Редактирование студента</p>
+    <span>*Все поля обязательны для заполнения</span>
+
     <form 
     novalidate
     [formGroup]="newFormModel"
     (ngSubmit)="newStudent()">
       <div formGroupName="fullName">
         <label for="lastName">Введите фамилию: </label>
-        <input formControlName="lastName" id="lastName">
+        <input 
+        [ngClass]="{'invalid': newFormModel.get('fullName')?.invalid &&
+                               newFormModel.get('fullName.lastName')?.dirty &&
+                               newFormModel.get('fullName.name')?.dirty &&
+                               newFormModel.get('fullName.patr')?.dirty ||
+                               newFormModel.get('fullName.lastName')?.dirty &&
+                               newFormModel.get('fullName.lastName')?.invalid}"
+        formControlName="lastName" id="lastName">
         <label for="name">Введите имя: </label>
-        <input formControlName="name" id="name">
+        <input 
+        [ngClass]="{'invalid': newFormModel.get('fullName')?.invalid &&
+                               newFormModel.get('fullName.lastName')?.dirty &&
+                               newFormModel.get('fullName.name')?.dirty &&
+                               newFormModel.get('fullName.patr')?.dirty ||
+                               newFormModel.get('fullName.name')?.dirty &&
+                               newFormModel.get('fullName.name')?.invalid}"
+        formControlName="name" id="name">
         <span 
           *ngIf="newFormModel.get('fullName.name')?.dirty &&
           newFormModel.get('fullName.patr')?.dirty &&
           newFormModel.get('fullName.lastName')?.dirty &&
           newFormModel.get('fullName')?.invalid"
           [ngClass]="{'tooltip': true,'errorText': true  }"
-          >Совпадение с фамилией или отчеством
+          >Заполните все поля и проверьте совпадение с фамилией или отчеством
         </span>
         <label for="patr">Введите отчество: </label>
-        <input formControlName="patr" id="patr">
+        <input 
+        [ngClass]="{'invalid': newFormModel.get('fullName')?.invalid &&
+                               newFormModel.get('fullName.lastName')?.dirty &&
+                               newFormModel.get('fullName.name')?.dirty &&
+                               newFormModel.get('fullName.patr')?.dirty ||
+                               newFormModel.get('fullName.patr')?.dirty &&
+                               newFormModel.get('fullName.patr')?.invalid}"
+                               
+        formControlName="patr" id="patr">
       </div>
        <label for="birthDate">Введите дату рождения: </label>
-       <input type="date" formControlName="birthDate" id="birthDate">
+       <input 
+       [ngClass]="{'invalid': newFormModel.get('birthDate')?.dirty && newFormModel.get('birthDate')?.invalid}"
+       type="date" formControlName="birthDate" id="birthDate">
        <span 
         *ngIf="newFormModel.get('birthDate')?.dirty && newFormModel.get('birthDate')?.invalid"
         [ngClass]="{'tooltip': true, 'errorText': true  }"
         >Студент должен быть старше 10 лет
        </span>
        <label for="score">Введите средний балл: </label>
-       <input type="text" formControlName="score" id="score">
+       <input 
+       [ngClass]="{'invalid': newFormModel.get('score')?.dirty && newFormModel.get('score')?.invalid}"
+       type="text" formControlName="score" id="score">
        <span
           *ngIf="newFormModel.get('score')?.dirty && newFormModel.get('score')?.invalid "
           [ngClass]="{'tooltip': true, 'errorText': true  }"
           >Диапозон 0-6
        </span>
-       <button [ngClass]="{'disabled':newFormModel.invalid}" type="submit">Добавить</button>
+       <button
+        [ngClass]="{'disabled':newFormModel.invalid}"
+         type="submit"
+         *ngIf="!edit"
+         >Добавить
+        </button>
+        <button
+        type="button"
+        [ngClass]="{'disabled':newFormModel.invalid}"
+         *ngIf="edit"
+         (click)="editStudent()"
+         >Редактировать
+        </button>
+        <button
+        type="button"
+         *ngIf="edit"
+         (click)="backToNewStudent()"
+         class="red"
+         >Отменить редактирование
+        </button>
     </form>
-    <button class="yellow" (click)="showModal()" >Редактировать</button>
-    <div *ngIf="modal.isShown" class="shown">
-      <div  class="modal">
-        <p>Введите номер студента</p>
-        <input type="text" [(ngModel)]="input" placeholder="Введите число от 1 до {{allStudents.length}}" >
-        <div>
-          <button  class="green" (click)="pickStudent(input)">Редактировать</button>
-          <button  class="red" (click)="hideModal()">Отмена</button>
-        </div>
-      </div>
 
-  </div>
 
   
 </div>
@@ -59,47 +96,6 @@
     <button  class="red" (click)="hideError()">Понятно</button>
   </div>
 </div>
-<div *ngIf="modal.edit" class="newStudent">
-  <p>Редактирование студента</p>
-  <form 
-  novalidate
-  [formGroup]="editFormModel"
-  (ngSubmit)="editStudent()">
-    <div formGroupName="fullName">
-      <label for="lastName">Введите фамилию: </label>
-      <input formControlName="lastName" id="lastName" >
-      <label for="name">Введите имя: </label>
-      <input formControlName="name" id="name">
-      <span 
-        *ngIf="editFormModel.get('fullName')?.invalid"
-        [ngClass]="{'tooltip': true,'errorText': true  }"
-        >Не должно совпадать с фамилией или отчеством
-      </span>
-      <label for="patr">Введите отчество: </label>
-      <input formControlName="patr" id="patr">
-    </div>
 
-     <label for="birthDate">Введите дату рождения: </label>
-     <input type="date" formControlName="birthDate" id="birthDate">
-     <span *ngIf="editFormModel.get('birthDate')?.dirty && editFormModel.get('birthDate')?.invalid"
-     [ngClass]="{'tooltip': true, 'errorText': true  }"
-     >Студент должен быть старше 10 лет</span>
-     <label for="score">Введите средний балл: </label>
-     <input type="text" formControlName="score" id="score">
-     <span *ngIf="editFormModel.get('score')?.dirty && editFormModel.get('score')?.invalid"
-            [ngClass]="{'tooltip': true,'errorText': true  }"
-    >Диапозон 0-6</span>
-     <button [ngClass]="{'disabled':editFormModel.invalid || editFormModel.pristine}" type="submit">Редактировать</button>
-  </form>
-  <button class="yellow"(click)="closeEdit()" >Отменить редактирование</button>
-  <div *ngIf="modal.isShown" class="shown">
-    <div class="modal">
-      <p>Введите id студента</p>
-      <input type="text">
-      <div>
-        <button  class="green"(click)="editStudent()">Да</button>
-        <button  class="red" (click)="hideModal()">Нет</button>
-      </div>
-    </div>
-</div>
+
 

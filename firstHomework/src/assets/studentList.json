@@ -25,7 +25,7 @@
     "name": "Андрей",
     "patronymic": "Васильевич",
     "birthDate": "02.01.1994",
-    "score":1.5,
+    "score":2,
     "deleted": false,
     "inRange": true
     },
@@ -55,7 +55,7 @@
     "name": "Виталий",
     "patronymic": "Егорович",
     "birthDate": "23.05.2001",
-    "score":3.5,
+    "score":3,
     "deleted": false,
     "inRange": true
     },

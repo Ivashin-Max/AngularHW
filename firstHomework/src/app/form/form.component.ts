@@ -18,34 +18,19 @@ export interface ValidationErrors {
 export class FormComponent  {
 
  allStudents: Istudent[] = studentsArr.students;
- input = "";
-
+ edit = false;
  newFormModel = new FormGroup({
    fullName: new FormGroup({
-     name: new FormControl(null, [Validators.required, Validators.pattern("[а-яА-Я a-zA-Z]*")]),
-     lastName: new FormControl(null, [Validators.required, Validators.pattern("[а-яА-Я a-zA-Z]*")]),
-     patr: new FormControl(null, [Validators.required, Validators.pattern("[а-яА-Я a-zA-Z]*")])
+     name: new FormControl(null, [Validators.required, Validators.minLength(1), Validators.pattern("[а-яА-Я a-zA-Z]*")]),
+     lastName: new FormControl(null, [Validators.required, Validators.minLength(1), Validators.pattern("[а-яА-Я a-zA-Z]*")]),
+     patr: new FormControl(null, [Validators.required, Validators.minLength(1), Validators.pattern("[а-яА-Я a-zA-Z]*")])
    }, this.fullNameDifferenceValidator),
-   birthDate:new FormControl(null, [Validators.required, this.ageRangeValidator]),
-   score:new FormControl(null, [Validators.required, Validators.maxLength(1), Validators.pattern("[0-6]")]),
-   butt: new FormControl()
+   birthDate:new FormControl(null, [Validators.required, Validators.minLength(1), this.ageRangeValidator]),
+   score:new FormControl(null, [Validators.required, Validators.minLength(1), Validators.maxLength(1), Validators.pattern("[0-6]")]),
  });
 
- editFormModel = new FormGroup({
-  fullName: new FormGroup({
-    name: new FormControl(null, [Validators.required, Validators.pattern("[а-яА-Я a-zA-Z]*")]),
-    lastName: new FormControl(null, [Validators.required, Validators.pattern("[а-яА-Я a-zA-Z]*")]),
-    patr: new FormControl(null, [Validators.required, Validators.pattern("[а-яА-Я a-zA-Z]*")])
-  }, this.fullNameDifferenceValidator),
-  birthDate:new FormControl(null, [Validators.required, this.ageRangeValidator]),
-  score:new FormControl(null, [Validators.required, Validators.maxLength(1), Validators.pattern("[0-6]")])
-});
-
  modal = {
-   isShown: false,
-   new: true,
-   edit: false,
-  id: "",
+  id: 0,
   error: false,
   errorMsg:""
  };
@@ -71,19 +56,6 @@ fullNameDifferenceValidator(control: AbstractControl): ValidationErrors | null {
   return null;
 }
 
-showModal(): void{
-  this.modal.isShown = true;
-}
-
-  hideModal(): void{
-    this.modal.isShown = false;
-    this.input = "";
-}
-
-closeEdit(): void{
-  this.modal.edit = false;
-  this.modal.new = true;
-}
 
 showError(msg: string): void{
   this.modal.error = true;
@@ -94,25 +66,19 @@ hideError(): void{
   this.modal.error = false;
 }
 
-pickStudent(id: string): void{
-  if (+id > this.allStudents.length || isNaN(+id) || +id <= 0){
-    return;
-  }
-  this.modal.isShown = false;
-  this.modal.new = false;
-  this.modal.edit = true;
+pickStudent(id: number): void{
+  this.edit = true;
   this.modal.id = id;
   this.setValues(id);
-  this.input = "";
 }
 
-private setValues(id: string): void{
+private setValues(id: number): void{
   const studentToEdit = this.allStudents.find((el) => el.id === +id);
   if (studentToEdit !== undefined){
   const correctDate = new Date(studentToEdit?.birthDate.split(".").reverse().join("-"));
-  this.editFormModel.get("birthDate")?.setValue(formatDate(correctDate, "yyyy-MM-dd", "en"));
-  this.editFormModel.get("fullName")?.setValue({ lastName: studentToEdit?.lastName, name: studentToEdit?.name, patr: studentToEdit?.patronymic });
-  this.editFormModel.get("score")?.setValue(studentToEdit?.score);
+  this.newFormModel.get("birthDate")?.setValue(formatDate(correctDate, "yyyy-MM-dd", "en"));
+  this.newFormModel.get("fullName")?.setValue({ lastName: studentToEdit?.lastName, name: studentToEdit?.name, patr: studentToEdit?.patronymic });
+  this.newFormModel.get("score")?.setValue(studentToEdit?.score);
   }
 }
 
@@ -136,18 +102,22 @@ private setValues(id: string): void{
  }
 
  editStudent(): void{
-   const studentToEdit = this.allStudents.findIndex((el) => (el.id === +this.modal.id) && !el.deleted);
+   const studentToEdit = this.allStudents.findIndex((el) => (el.id === this.modal.id) && !el.deleted);
    if (studentToEdit === -1) {
     this.showError("Похоже,что кто-то удалил студента до завершения редактирования");
     return;
   }
-  if (this.editFormModel.valid && this.editFormModel.dirty){
-    const correctDate = this.editFormModel.value.birthDate.split("-").reverse().join(".");
-    this.allStudents[studentToEdit].name = this.editFormModel.value.fullName.name;
-    this.allStudents[studentToEdit].lastName = this.editFormModel.value.fullName.lastName;
-    this.allStudents[studentToEdit].patronymic = this.editFormModel.value.fullName.patr;
+  if (this.newFormModel.valid && this.newFormModel.dirty){
+    const correctDate = this.newFormModel.value.birthDate.split("-").reverse().join(".");
+    this.allStudents[studentToEdit].name = this.newFormModel.value.fullName.name;
+    this.allStudents[studentToEdit].lastName = this.newFormModel.value.fullName.lastName;
+    this.allStudents[studentToEdit].patronymic = this.newFormModel.value.fullName.patr;
     this.allStudents[studentToEdit].birthDate = correctDate;
-    this.allStudents[studentToEdit].score = this.editFormModel.value.score;
+    this.allStudents[studentToEdit].score = this.newFormModel.value.score;
   }
+ }
+ backToNewStudent(): void{
+  this.edit = false;
+  this.newFormModel.reset();
  }
 }

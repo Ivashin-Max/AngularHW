@@ -36,7 +36,6 @@
     <h1>Таблица студентов</h1>
     <table>
       <tr>
-        <th class="pointer" (click)="sort('id')">Номер студента</th>
         <th class="pointer" (click)="sort('lastName')">Фамилия</th>
         <th class="pointer" (click)="sort('name')">Имя</th>
         <th class="pointer" (click)="sort('patronymic')">Отчество</th>
@@ -52,16 +51,18 @@
                   'notInRange':notInRange.includes(student.id),
                 'table_odd':j }"
         > 
-          <td>{{student.id}}</td>
           <td>{{student.lastName}}</td>
           <td>{{student.name}}</td>
           <td>{{student.patronymic}}</td>
           <td>{{student.birthDate}}</td>
           <td>{{student.score}}</td>
-          <td><button (click)="showModal(student.id, student.lastName, student.name)">&times;</button></td>
+          <td><button class="table_edit" (click)="pickStudent(student.id)">Редактировать</button></td>
+          <td><button class="table_del"(click)="showModal(student.id, student.lastName, student.name)">&times;</button></td>
       </tr>
     </table>
+
   </div>
+  <app-form></app-form>
 </div>
   <div *ngIf="modal.isShown" class="shown">
     <div class="modal">
