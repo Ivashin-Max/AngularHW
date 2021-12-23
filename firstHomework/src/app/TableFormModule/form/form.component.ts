@@ -1,6 +1,6 @@
-import { Component } from "@angular/core";
+import { ChangeDetectionStrategy, Component } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms";
-import studentsArr from "../../assets/studentList.json";
+import studentsArr from "../../../assets/studentList.json";
 import { formatDate } from "@angular/common" ;
 import { Istudent } from "../table/table.component";
 
@@ -13,6 +13,7 @@ export interface ValidationErrors {
 @Component({
   selector: "app-form",
   templateUrl: "./form.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ["./form.component.less"]
 })
 export class FormComponent  {

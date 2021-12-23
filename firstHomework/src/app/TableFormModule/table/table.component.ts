@@ -1,5 +1,6 @@
-import { Component, Input, ViewChild } from "@angular/core";
+import { ChangeDetectionStrategy, Component, Input, ViewChild } from "@angular/core";
 import { FormComponent } from "../form/form.component";
+
 
 export interface Istudent{
       id: number;
@@ -12,9 +13,12 @@ export interface Istudent{
       inRange: boolean;
 }
 
+
+
 @Component({
   selector: "app-table",
   templateUrl: "./table.component.html",
+  changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ["./table.component.less"]
 })
 export class TableComponent  {
@@ -23,7 +27,7 @@ export class TableComponent  {
   input = "";
   minDate = "";
   maxDate = "";
-  checkboxSelected = true;
+  checkboxSelected = false;
   placeholder = "Введите имя или фамилию";
   selected = "Поиск";
   modal = {
@@ -114,7 +118,7 @@ export class TableComponent  {
     } else {
     let counter = 0;
      for (const student of this.students) {
-       if (student.lastName === value || student.name === value){
+       if (student.lastName.toLocaleLowerCase() === value.toLocaleLowerCase() || student.name.toLocaleLowerCase() === value.toLocaleLowerCase()){
          this.findedStudents.push(student.id);
          counter++;
        }

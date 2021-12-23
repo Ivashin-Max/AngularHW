@@ -1,21 +1,16 @@
 import { NgModule } from "@angular/core";
-import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 import { BrowserModule } from "@angular/platform-browser";
 
 import { AppComponent } from "./app.component";
-import { FormComponent } from "./form/form.component";
-import { TableComponent } from "./table/table.component";
+import { TableFormModule } from "./TableFormModule/tableForm.module";
 
 @NgModule({
   declarations: [
     AppComponent,
-    FormComponent,
-    TableComponent,
   ],
   imports: [
     BrowserModule,
-    FormsModule,
-    ReactiveFormsModule,
+    TableFormModule,
   ],
   providers: [],
   bootstrap: [AppComponent]

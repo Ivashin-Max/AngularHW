@@ -2,9 +2,9 @@
 <div class="wrap">
 
   <div class="form">
-    <p>Фильтрация и поиск</p>
+    <p tooltip>Фильтрация и поиск</p>
     <input *ngIf="selected==='Поиск'|| selected==='Фильтр по баллам'" type="text" [(ngModel)] ="input" placeholder="{{placeholder}}">
-    <span *ngIf="selected==='Фильтр по дате'">Начальная дата:</span>
+    <span  *ngIf="selected==='Фильтр по дате'">Начальная дата:</span>
     <input *ngIf="selected==='Фильтр по дате'" type="date" [(ngModel)] ="minDate" >
     <span *ngIf="selected==='Фильтр по дате'">Конечная дата:</span>
     <input *ngIf="selected==='Фильтр по дате'" type="date" [(ngModel)] ="maxDate">
@@ -17,11 +17,11 @@
     </button>
     <button (click)="clearFilter()">Сбросить все фильтры</button>
     <div class="toggleLabel">
-      <label for="switch">Подсветка плохих оценок</label>
+      <label tooltip for="switch">Подсветка плохих оценок</label>
       <input 
       class="toggle" 
       type="checkbox"
-      [checked]="true"
+      [checked]="false"
       (change)="checkboxSelected = !checkboxSelected"
       id="switch"
       >
@@ -33,7 +33,7 @@
       </select>
   </div>
   <div class="table">
-    <h1>Таблица студентов</h1>
+    <h1 >Таблица студентов</h1>
     <table>
       <tr>
         <th class="pointer" (click)="sort('lastName')">Фамилия</th>
@@ -43,7 +43,8 @@
         <th class="pointer" (click)="sort('score')">Средний балл</th>
         
       </tr>
-      <tr 
+      <tr shine 
+
         *ngFor="let student of students;  let j = odd"
         [ngClass]="{'three': student.score<3 && checkboxSelected,
                     'deleted': student.deleted,
@@ -51,12 +52,12 @@
                   'notInRange':notInRange.includes(student.id),
                 'table_odd':j }"
         > 
-          <td>{{student.lastName}}</td>
-          <td>{{student.name}}</td>
-          <td>{{student.patronymic}}</td>
+          <td tooltip>{{student.lastName | capitalizeWord | mrMrs}}</td>
+          <td>{{student.name | capitalizeWord}}</td>
+          <td>{{student.patronymic | capitalizeWord}}</td>
           <td>{{student.birthDate}}</td>
           <td>{{student.score}}</td>
-          <td><button class="table_edit" (click)="pickStudent(student.id)">Редактировать</button></td>
+          <td><button  class="table_edit" (click)="pickStudent(student.id)">Редактировать</button></td>
           <td><button class="table_del"(click)="showModal(student.id, student.lastName, student.name)">&times;</button></td>
       </tr>
     </table>
