@@ -5,12 +5,13 @@ import { FormsModule, ReactiveFormsModule } from "@angular/forms";
 
 
 import { FormComponent } from "./form/form.component";
-import { ShineDirective, TooltipDirective } from "./table/directives";
+import { BirthdayCakeDirective, ShineDirective, TooltipDirective } from "./table/directives";
 import { CapitalizeWordPipe, MrMrsPipe } from "./table/pipes";
 import { TableComponent } from "./table/table.component";
 
 @NgModule({
   declarations: [
+    BirthdayCakeDirective,
     CapitalizeWordPipe,
     FormComponent,
     MrMrsPipe,

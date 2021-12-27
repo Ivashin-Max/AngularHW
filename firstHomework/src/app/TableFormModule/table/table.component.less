@@ -108,17 +108,24 @@ button{
 p{
   
   font-size: 20px;
-  // font-weight: bold;
+
   text-align: center;
   margin-bottom: 50px;
 }
 
-
+.shine{
+  transition : .9s ease;
+  font-size: 18px;
+  background-color: @color_green !important;
+}
 
 .three{
   color: red
 }
-
+img{
+  height: 25px;
+  margin-left: 10px;
+}
 .shown{
   display: flex;
   align-items: center;
@@ -231,10 +238,11 @@ display: none;
     height: 50px;
   }
   & td{
-
+    height: 50px;
     width: max-content;
     text-align: center;
     padding-left: 10px;
+    // display: flex;
     &:last-child{
       width: max-content;
     }
@@ -245,6 +253,10 @@ display: none;
     background-color: #39aea823;
   }
 
+}
+.cakeTd{
+  display: flex;
+  align-items: center;
 }
 [data-tooltip] {
   position: relative;

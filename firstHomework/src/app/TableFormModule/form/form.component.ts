@@ -1,4 +1,4 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms";
 import studentsArr from "../../../assets/studentList.json";
 import { formatDate } from "@angular/common" ;
@@ -17,6 +17,9 @@ export interface ValidationErrors {
   styleUrls: ["./form.component.less"]
 })
 export class FormComponent  {
+
+  constructor(private ref: ChangeDetectorRef) {
+  }
 
  allStudents: Istudent[] = studentsArr.students;
  edit = false;
@@ -71,6 +74,7 @@ pickStudent(id: number): void{
   this.edit = true;
   this.modal.id = id;
   this.setValues(id);
+  this.ref.markForCheck();
 }
 
 private setValues(id: number): void{

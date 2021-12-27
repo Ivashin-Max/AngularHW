@@ -55,13 +55,15 @@
           <td tooltip>{{student.lastName | capitalizeWord | mrMrs}}</td>
           <td>{{student.name | capitalizeWord}}</td>
           <td>{{student.patronymic | capitalizeWord}}</td>
-          <td>{{student.birthDate}}</td>
+          <td 
+          class="cakeTd"
+          birthdayCake [value]="student.birthDate"
+          >{{student.birthDate}}</td>
           <td>{{student.score}}</td>
           <td><button  class="table_edit" (click)="pickStudent(student.id)">Редактировать</button></td>
           <td><button class="table_del"(click)="showModal(student.id, student.lastName, student.name)">&times;</button></td>
       </tr>
     </table>
-
   </div>
   <app-form></app-form>
 </div>

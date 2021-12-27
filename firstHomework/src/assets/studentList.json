@@ -54,7 +54,7 @@
     "lastName":"громов",
     "name": "виталий",
     "patronymic": "егорович",
-    "birthDate": "23.05.2001",
+    "birthDate": "27.12.2001",
     "score":3,
     "deleted": false,
     "inRange": true
@@ -62,9 +62,9 @@
     {
     "id": 7,
     "lastName":"зиновьева",
-    "name": "алёна",
+    "name": "алена",
     "patronymic": "борисовна",
-    "birthDate": "02.02.1999",
+    "birthDate": "27.12.1999",
     "score":2,
     "deleted": false,
     "inRange": true
