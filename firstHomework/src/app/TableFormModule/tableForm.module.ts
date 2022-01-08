@@ -1,7 +1,8 @@
 import { CommonModule } from "@angular/common";
+import { HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-
+import { RouterModule } from "@angular/router";
 
 
 import { FormComponent } from "./form/form.component";
@@ -22,7 +23,9 @@ import { TableComponent } from "./table/table.component";
   imports: [
     CommonModule,
     FormsModule,
+    HttpClientModule,
     ReactiveFormsModule,
+    RouterModule,
   ],
   providers: [],
   exports: [

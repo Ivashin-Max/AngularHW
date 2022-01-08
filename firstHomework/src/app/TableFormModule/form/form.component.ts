@@ -1,8 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms";
-import studentsArr from "../../../assets/studentList.json";
 import { formatDate } from "@angular/common" ;
-import { Istudent } from "../table/table.component";
+import { IstudentEdit, StudentService, StudentsOfflineService } from "../services/studentsOffline.service";
+import { ActivatedRoute, Router } from "@angular/router";
+import { StudentsOnlineService } from "../services/students-online.service";
+
 
 
 export interface ValidationErrors {
@@ -14,15 +16,45 @@ export interface ValidationErrors {
   selector: "app-form",
   templateUrl: "./form.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
-  styleUrls: ["./form.component.less"]
+  styleUrls: ["./form.component.less"],
+  providers: [{
+    provide: StudentService,
+    useFactory: (snapshot: ActivatedRoute): StudentService => {
+      return snapshot.snapshot.url[snapshot.snapshot.url.length - 1].path === "online" ?
+      new StudentsOnlineService() :
+      new StudentsOfflineService();
+    },
+    deps: [ActivatedRoute]
+  }]
 })
 export class FormComponent  {
 
-  constructor(private ref: ChangeDetectorRef) {
+  online = true;
+  edit = false;
+  modal = {
+    id: 0,
+    error: false,
+    errorMsg:""
+   };
+
+  constructor(private ref: ChangeDetectorRef, public router: Router, public activeRoute: ActivatedRoute, public studentService: StudentService) {
+
+    activeRoute.url.subscribe((e) => {
+      if (e[e.length - 1].path === "online"){
+        this.online = true;
+      } else {
+        this.online = false;
+      }
+      if (e.length === 3){
+        console.log(e);
+        this.pickStudent(+e[1].path);
+      }
+
+});
   }
 
- allStudents: Istudent[] = studentsArr.students;
- edit = false;
+
+
  newFormModel = new FormGroup({
    fullName: new FormGroup({
      name: new FormControl(null, [Validators.required, Validators.minLength(1), Validators.pattern("[а-яА-Я a-zA-Z]*")]),
@@ -33,11 +65,7 @@ export class FormComponent  {
    score:new FormControl(null, [Validators.required, Validators.minLength(1), Validators.maxLength(1), Validators.pattern("[0-6]")]),
  });
 
- modal = {
-  id: 0,
-  error: false,
-  errorMsg:""
- };
+
 
  ageRangeValidator(control: AbstractControl): ValidationErrors | null {
   const date = new Date();
@@ -78,7 +106,7 @@ pickStudent(id: number): void{
 }
 
 private setValues(id: number): void{
-  const studentToEdit = this.allStudents.find((el) => el.id === +id);
+  const studentToEdit = this.studentService.students.find((el) => el.id === +id);
   if (studentToEdit !== undefined){
   const correctDate = new Date(studentToEdit?.birthDate.split(".").reverse().join("-"));
   this.newFormModel.get("birthDate")?.setValue(formatDate(correctDate, "yyyy-MM-dd", "en"));
@@ -93,7 +121,7 @@ private setValues(id: number): void{
     if (this.newFormModel.valid){
       const correctDate = this.newFormModel.value.birthDate.split("-").reverse().join(".");
       const newStudent = {
-       "id": this.allStudents.length + 1,
+       "id": this.studentService.students.length + 1,
        "lastName":this.newFormModel.value.fullName.lastName,
        "name": this.newFormModel.value.fullName.name,
        "patronymic": this.newFormModel.value.fullName.patr,
@@ -102,27 +130,34 @@ private setValues(id: number): void{
        "deleted": false,
        "inRange": true
        };
-      this.allStudents.push(newStudent);
+      this.studentService.newStudent(newStudent);
     }
  }
 
  editStudent(): void{
-   const studentToEdit = this.allStudents.findIndex((el) => (el.id === this.modal.id) && !el.deleted);
-   if (studentToEdit === -1) {
-    this.showError("Похоже,что кто-то удалил студента до завершения редактирования");
-    return;
-  }
+
   if (this.newFormModel.valid && this.newFormModel.dirty){
+
     const correctDate = this.newFormModel.value.birthDate.split("-").reverse().join(".");
-    this.allStudents[studentToEdit].name = this.newFormModel.value.fullName.name;
-    this.allStudents[studentToEdit].lastName = this.newFormModel.value.fullName.lastName;
-    this.allStudents[studentToEdit].patronymic = this.newFormModel.value.fullName.patr;
-    this.allStudents[studentToEdit].birthDate = correctDate;
-    this.allStudents[studentToEdit].score = this.newFormModel.value.score;
+    const newValues: IstudentEdit = {
+      name : this.newFormModel.value.fullName.name,
+      lastName : this.newFormModel.value.fullName.lastName,
+      patronymic : this.newFormModel.value.fullName.patr,
+      birthDate : correctDate,
+      score : this.newFormModel.value.score,
+    };
+
+    const editStatus = this.studentService.editStudent(this.modal.id, newValues);
+    if (editStatus === -1) {
+      this.showError("Похоже,что такого студента не существует");
+      return;
+    }
   }
  }
+
  backToNewStudent(): void{
   this.edit = false;
   this.newFormModel.reset();
+  this.router.navigateByUrl(`add/${this.activeRoute.snapshot.url[this.activeRoute.snapshot.url.length - 1].path}`);
  }
 }

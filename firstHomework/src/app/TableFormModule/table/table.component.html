@@ -23,8 +23,16 @@
       type="checkbox"
       [checked]="false"
       (change)="checkboxSelected = !checkboxSelected"
-      id="switch"
       >
+    </div>
+    <div class="toggleLabel">
+
+      <button
+      (click)="onlineServicePick()">Online</button>
+      <button
+      (click)="offlineServicePick()">Offline</button>
+      <button
+      (click)="test()">Test</button>
     </div>
     <select [ngModel]="selected" (ngModelChange)="onChange($event)"  > 
       <option value='Поиск'>Поиск по имени или фамилии</option> 
@@ -34,6 +42,7 @@
   </div>
   <div class="table">
     <h1 >Таблица студентов</h1>
+    <h3>Режим работы: {{online===true?"online":"offline"}}</h3>
     <table>
       <tr>
         <th class="pointer" (click)="sort('lastName')">Фамилия</th>
@@ -45,10 +54,10 @@
       </tr>
       <tr shine 
 
-        *ngFor="let student of students;  let j = odd"
+        *ngFor="let student of offlineService.students;  let j = odd"
         [ngClass]="{'three': student.score<3 && checkboxSelected,
                     'deleted': student.deleted,
-                    'finded': findedStudents.includes(student.id),
+                    'finded': offlineService.findedStudents.includes(student.id),
                   'notInRange':notInRange.includes(student.id),
                 'table_odd':j }"
         > 
@@ -60,8 +69,20 @@
           birthdayCake [value]="student.birthDate"
           >{{student.birthDate}}</td>
           <td>{{student.score}}</td>
-          <td><button  class="table_edit" (click)="pickStudent(student.id)">Редактировать</button></td>
-          <td><button class="table_del"(click)="showModal(student.id, student.lastName, student.name)">&times;</button></td>
+          <td>
+            <button  
+              class="table_edit"
+              routerLink="/edit/{{student.id}}/{{online===true?'online':'offline'}}" >
+              Редактировать
+            </button>
+          </td>
+          <td>
+            <button 
+              class="table_del"
+              (click)="showModal(student.id, student.lastName, student.name)">
+              &times;
+            </button>
+          </td>
       </tr>
     </table>
   </div>

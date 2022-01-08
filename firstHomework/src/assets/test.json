@@ -1,0 +1,23 @@
+{"students":
+  [
+    {"id": 1,
+      "lastName":"fsdf",
+      "name": "sdf",
+      "patronymic": "ss",
+      "birthDate": "27.08.1994",
+      "score":5, 
+      "deleted": false,
+      "inRange": true
+    },
+    {
+    "id": 2,
+    "lastName":"васильев",
+    "name": "василий",
+    "patronymic": "васильевич",
+    "birthDate": "01.01.1994",
+    "score":2,
+    "deleted": false,
+    "inRange": true
+    }
+  ]
+}
