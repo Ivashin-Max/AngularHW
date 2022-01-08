@@ -1,11 +1,13 @@
 import { CommonModule } from "@angular/common";
-import { HttpClientModule } from "@angular/common/http";
+import { HttpClient, HttpClientModule } from "@angular/common/http";
 import { NgModule } from "@angular/core";
 import { FormsModule, ReactiveFormsModule } from "@angular/forms";
-import { RouterModule } from "@angular/router";
+import { ActivatedRoute, RouterModule } from "@angular/router";
 
 
 import { FormComponent } from "./form/form.component";
+import { StudentsOnlineService } from "./services/students-online.service";
+import { StudentService, StudentsOfflineService } from "./services/studentsOffline.service";
 import { BirthdayCakeDirective, ShineDirective, TooltipDirective } from "./table/directives";
 import { CapitalizeWordPipe, MrMrsPipe } from "./table/pipes";
 import { TableComponent } from "./table/table.component";
@@ -27,7 +29,17 @@ import { TableComponent } from "./table/table.component";
     ReactiveFormsModule,
     RouterModule,
   ],
-  providers: [],
+  providers: [
+    {
+      provide: StudentService,
+      useFactory: (snapshot: ActivatedRoute, http: HttpClient): StudentService => {
+        return snapshot.snapshot.url[snapshot.snapshot.url.length - 1].path === "online" ?
+        new StudentsOnlineService(http) :
+        new StudentsOfflineService();
+      },
+      deps: [ActivatedRoute, HttpClient]
+    },
+  ],
   exports: [
     FormComponent,
     TableComponent,

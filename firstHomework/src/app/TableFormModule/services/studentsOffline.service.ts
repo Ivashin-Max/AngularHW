@@ -1,3 +1,4 @@
+import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import studentsArr from "../../../assets/studentList.json";
 
@@ -23,17 +24,17 @@ export interface IstudentEdit{
 
 
 
-
+@Injectable( { providedIn: "root" } )
 export class StudentService {
   public students: Istudent[] = [];
   public findedStudents: number[] = [];
 
-  constructor(){
+  constructor(http: HttpClient){
     this.getAllStudents();
   }
 
-  getAllStudents(): Istudent[] {
-    return [];
+  getAllStudents(): void {
+
   }
 
   deleteStudent(id: number): void{}

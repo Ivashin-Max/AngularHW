@@ -1,8 +1,8 @@
-import { ChangeDetectionStrategy, Component } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { StudentsOnlineService } from "../services/students-online.service";
 
-import { Istudent, StudentService, StudentsOfflineService } from "../services/studentsOffline.service";
+import { Istudent, StudentService } from "../services/studentsOffline.service";
 
 
 
@@ -12,21 +12,12 @@ import { Istudent, StudentService, StudentsOfflineService } from "../services/st
   templateUrl: "./table.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ["./table.component.less"],
-  providers: [{
-    provide: StudentService,
-    useFactory: (snapshot: ActivatedRoute): StudentService => {
-      return snapshot.snapshot.url[snapshot.snapshot.url.length - 1].path === "online" ?
-      new StudentsOnlineService() :
-      new StudentsOfflineService();
-    },
-    deps: [ActivatedRoute]
-  }]
+  providers: [StudentService]
 })
-export class TableComponent  {
+export class TableComponent  implements OnInit{
 
   online = true;
-  constructor(public offlineService: StudentService, public router: Router, public activeRoute: ActivatedRoute){
-    // router.events.subscribe((e) => console.log(e));
+  constructor(private ref: ChangeDetectorRef, public studentService: StudentsOnlineService, public router: Router, public activeRoute: ActivatedRoute){
     activeRoute.url.subscribe((e) => {
       if (e[e.length - 1].path === "online"){
         this.online = true;
@@ -36,6 +27,11 @@ export class TableComponent  {
     });
   }
 
+  ngOnInit(): void{
+    console.log(this.studentService.students);
+    this.studentService.getAllStudents();
+
+  }
 
   input = "";
   minDate = "";
@@ -56,17 +52,18 @@ export class TableComponent  {
 
   onlineServicePick(): void{
       this.router.navigateByUrl(`${this.activeRoute.snapshot.url.slice(0, this.activeRoute.snapshot.url.length - 1).map((el) => "/" + el.path ).join("")}/online`);
+
   }
-  offlineServicePick(): void{
+  studentServicePick(): void{
     this.router.navigateByUrl(`${this.activeRoute.snapshot.url.slice(0, this.activeRoute.snapshot.url.length - 1).map((el) => "/" + el.path ).join("")}/offline`);
   }
 
 test(): void{
   // console.log(this.activeRoute.snapshot.url.slice(0, this.activeRoute.snapshot.url.length - 1).map((el) => "/" + el.path ).join(""));
   // console.log(this.isOnline());
-  console.log(this.router.events);
-  console.log(this.activeRoute.snapshot.url[this.activeRoute.snapshot.url.length - 1].path);
-
+  // console.log(this.router.events);
+  // console.log(this.activeRoute.snapshot.url[this.activeRoute.snapshot.url.length - 1].path);
+  this.studentService.getAllStudents();
 }
 
   onChange(event: string): void{
@@ -99,7 +96,7 @@ test(): void{
   }
 
   deleteStudent(id: number): void{
-    this.offlineService.deleteStudent(id);
+    this.studentService.deleteStudent(id);
     this.modal.isShown = false;
   }
 
@@ -108,7 +105,7 @@ test(): void{
   }
 
   sort(property: string): void{
-   this.offlineService.students.sort(this.dynamicSort(property));
+   this.studentService.students.sort(this.dynamicSort(property));
   }
 
   dynamicSort(property: string): (a: Istudent, b: Istudent) => number {
@@ -140,9 +137,9 @@ test(): void{
       this.errorModal("Введите данные");
     } else {
     let counter = 0;
-     for (const student of this.offlineService.students) {
+     for (const student of this.studentService.students) {
        if (student.lastName.toLocaleLowerCase() === value.toLocaleLowerCase() || student.name.toLocaleLowerCase() === value.toLocaleLowerCase()){
-         this.offlineService.findedStudents.push(student.id);
+         this.studentService.findedStudents.push(student.id);
          counter++;
        }
      }
@@ -175,7 +172,7 @@ test(): void{
     if (isNaN(rAnge.min) || isNaN(rAnge.max) || (rAnge.min <= 0 || rAnge.max <= 0) || (rAnge.min > 10 || rAnge.max > 10)){
       this.errorModal("Некоректный ввод, попробуйте ещё раз");
     } else {
-      for (const student of this.offlineService.students) {
+      for (const student of this.studentService.students) {
         if (student.score <= rAnge.max && student.score >= rAnge.min){
           this.input = "";
         } else {
@@ -197,7 +194,7 @@ test(): void{
       this.errorModal("Некоректный ввод, попробуйте ещё раз");
     } else {
 
-    for (const student of this.offlineService.students) {
+    for (const student of this.studentService.students) {
      const birthDate = this.getCorrectDateFormat(student.birthDate);
 
 
@@ -212,7 +209,7 @@ test(): void{
   }
 
   clearFilter(): void{
-    this.offlineService.findedStudents.length = 0;
+    this.studentService.findedStudents.length = 0;
     this.notInRange.length = 0;
   }
 

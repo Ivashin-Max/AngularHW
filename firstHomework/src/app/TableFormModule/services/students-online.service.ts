@@ -1,36 +1,59 @@
-import { Injectable } from "@angular/core";
+
 import { Istudent, IstudentEdit, StudentService } from "./studentsOffline.service";
-import studentsArr from "../../../assets/test.json";
+// import studentsArr from "../../../assets/test.json";
+import { HttpClient } from "@angular/common/http";
+import { Injectable } from "@angular/core";
 
-@Injectable({
-  providedIn: "root"
-})
-export class StudentsOnlineService implements  StudentService{
 
+
+
+@Injectable({ providedIn: "root" })
+export class StudentsOnlineService implements StudentService{
+  private studentsUrl = "http://localhost:4000/students";
   public students: Istudent[] = [];
   public findedStudents: number[] = [];
 
-  constructor(){
-    this.getAllStudents();
-
+  constructor(public http: HttpClient){
   }
 
 
-  getAllStudents(): Istudent[] {
-    this.students = studentsArr.students;
 
-    return this.students;
+  getAllStudents(): any {
+   return this.http.get<Istudent[]>(this.studentsUrl).subscribe((students) => this.students = students);
   }
 
 
   deleteStudent(id: number): void {
-    throw new Error("Method not implemented.");
+    this.http.get<Istudent[]>(`${this.studentsUrl}/${id.toString()}/del`).subscribe((students) => this.students = students);
+
+
   }
-  newStudent(): void {
-    throw new Error("Method not implemented.");
+  newStudent(student: Istudent): void {
+
+    this.http.post<Istudent[]>(this.studentsUrl, student).subscribe((res) => {
+      this.students = res;
+      console.log(this.students);
+      });
   }
+
   editStudent(id: number, newValues: IstudentEdit): number{
-    throw new Error("Method not implemented.");
+    const studentToEdit = this.students.findIndex((el) => (el.id === id) && !el.deleted);
+    if (studentToEdit === -1) {
+     return -1;
+   }
+   const editedStudent: IstudentEdit = {
+    "name" : newValues.name,
+    "lastName" : newValues.lastName,
+    "patronymic" : newValues.patronymic,
+    "birthDate" : newValues.birthDate,
+    "score" : +newValues.score,
+   };
+
+    this.http.patch<Istudent[]>(`${this.studentsUrl}/${id.toString()}`, editedStudent).subscribe((res) => {
+      this.students = res;
+      console.log(this.students);
+      });
+     return 1;
   }
 
 }

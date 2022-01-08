@@ -30,7 +30,7 @@
       <button
       (click)="onlineServicePick()">Online</button>
       <button
-      (click)="offlineServicePick()">Offline</button>
+      (click)="studentServicePick()">Offline</button>
       <button
       (click)="test()">Test</button>
     </div>
@@ -43,7 +43,7 @@
   <div class="table">
     <h1 >Таблица студентов</h1>
     <h3>Режим работы: {{online===true?"online":"offline"}}</h3>
-    <table>
+    <table  >
       <tr>
         <th class="pointer" (click)="sort('lastName')">Фамилия</th>
         <th class="pointer" (click)="sort('name')">Имя</th>
@@ -52,12 +52,13 @@
         <th class="pointer" (click)="sort('score')">Средний балл</th>
         
       </tr>
+
       <tr shine 
 
-        *ngFor="let student of offlineService.students;  let j = odd"
+        *ngFor="let student of studentService.students;  let j = odd"
         [ngClass]="{'three': student.score<3 && checkboxSelected,
                     'deleted': student.deleted,
-                    'finded': offlineService.findedStudents.includes(student.id),
+                    'finded': studentService.findedStudents.includes(student.id),
                   'notInRange':notInRange.includes(student.id),
                 'table_odd':j }"
         > 

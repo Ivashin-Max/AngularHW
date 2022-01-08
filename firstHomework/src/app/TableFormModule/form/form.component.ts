@@ -1,9 +1,10 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms";
 import { formatDate } from "@angular/common" ;
-import { IstudentEdit, StudentService, StudentsOfflineService } from "../services/studentsOffline.service";
+import { IstudentEdit } from "../services/studentsOffline.service";
 import { ActivatedRoute, Router } from "@angular/router";
 import { StudentsOnlineService } from "../services/students-online.service";
+
 
 
 
@@ -17,15 +18,7 @@ export interface ValidationErrors {
   templateUrl: "./form.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ["./form.component.less"],
-  providers: [{
-    provide: StudentService,
-    useFactory: (snapshot: ActivatedRoute): StudentService => {
-      return snapshot.snapshot.url[snapshot.snapshot.url.length - 1].path === "online" ?
-      new StudentsOnlineService() :
-      new StudentsOfflineService();
-    },
-    deps: [ActivatedRoute]
-  }]
+  providers: []
 })
 export class FormComponent  {
 
@@ -37,7 +30,7 @@ export class FormComponent  {
     errorMsg:""
    };
 
-  constructor(private ref: ChangeDetectorRef, public router: Router, public activeRoute: ActivatedRoute, public studentService: StudentService) {
+  constructor(private ref: ChangeDetectorRef, public router: Router, public activeRoute: ActivatedRoute, public studentService: StudentsOnlineService) {
 
     activeRoute.url.subscribe((e) => {
       if (e[e.length - 1].path === "online"){
