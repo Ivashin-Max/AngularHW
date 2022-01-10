@@ -4,13 +4,13 @@ import { Istudent, IstudentEdit, StudentService } from "./studentsOffline.servic
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import { Observable } from "rxjs";
-
+import { environment } from "src/environments/environment";
 
 
 
 @Injectable({ providedIn: "root" })
 export class StudentsOnlineService implements StudentService{
-  private studentsUrl = "http://localhost:4000/students";
+  private studentsUrl = environment.studentsUrl;
   public students: Istudent[] = [];
   public findedStudents: number[] = [];
 
