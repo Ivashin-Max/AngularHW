@@ -15,6 +15,7 @@ export class StudentsOnlineService implements StudentService{
   public findedStudents: number[] = [];
 
   constructor(public http: HttpClient){
+    this.getAllStudents();
   }
 
 
@@ -34,7 +35,7 @@ export class StudentsOnlineService implements StudentService{
 
     this.http.post<Istudent[]>(this.studentsUrl, student).subscribe((res) => {
       this.students = res;
-      console.log(this.students);
+
       });
   }
 
@@ -53,7 +54,7 @@ export class StudentsOnlineService implements StudentService{
 
     this.http.patch<Istudent[]>(`${this.studentsUrl}/${id.toString()}`, editedStudent).subscribe((res) => {
       this.students = res;
-      console.log(this.students);
+
       });
      return 1;
   }

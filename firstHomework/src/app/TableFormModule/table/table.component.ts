@@ -25,6 +25,8 @@ export class TableComponent  implements OnInit{
   ngOnInit(): void{
 
    this.students = this.studentService.getAllStudents();
+   setInterval(() => this.ref.markForCheck(), 1000,
+   );
   }
 
   isOffline = this.activeRoute.snapshot.queryParams["offline"];
