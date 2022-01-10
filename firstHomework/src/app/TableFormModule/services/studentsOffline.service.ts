@@ -1,4 +1,3 @@
-import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 import studentsArr from "../../../assets/studentList.json";
 
@@ -29,7 +28,7 @@ export class StudentService {
   public students: Istudent[] = [];
   public findedStudents: number[] = [];
 
-  constructor(http: HttpClient){
+  constructor(){
     this.getAllStudents();
   }
 

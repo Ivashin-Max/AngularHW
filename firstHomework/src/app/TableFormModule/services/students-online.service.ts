@@ -3,6 +3,7 @@ import { Istudent, IstudentEdit, StudentService } from "./studentsOffline.servic
 // import studentsArr from "../../../assets/test.json";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+import { Observable } from "rxjs";
 
 
 
@@ -18,8 +19,9 @@ export class StudentsOnlineService implements StudentService{
 
 
 
-  getAllStudents(): any {
-   return this.http.get<Istudent[]>(this.studentsUrl).subscribe((students) => this.students = students);
+  getAllStudents(): Observable<Istudent[]> {
+   this.http.get<Istudent[]>(this.studentsUrl).subscribe((students) => this.students = students);
+   return this.http.get<Istudent[]>(this.studentsUrl);
   }
 
 

@@ -1,9 +1,9 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms";
 import { formatDate } from "@angular/common" ;
-import { IstudentEdit } from "../services/studentsOffline.service";
+import { IstudentEdit, StudentService } from "../services/studentsOffline.service";
 import { ActivatedRoute, Router } from "@angular/router";
-import { StudentsOnlineService } from "../services/students-online.service";
+
 
 
 
@@ -22,7 +22,7 @@ export interface ValidationErrors {
 })
 export class FormComponent  {
 
-  online = true;
+  isOffline = this.activeRoute.snapshot.queryParams["offline"];
   edit = false;
   modal = {
     id: 0,
@@ -30,17 +30,12 @@ export class FormComponent  {
     errorMsg:""
    };
 
-  constructor(private ref: ChangeDetectorRef, public router: Router, public activeRoute: ActivatedRoute, public studentService: StudentsOnlineService) {
+  constructor(private ref: ChangeDetectorRef, public router: Router, public activeRoute: ActivatedRoute, @Inject(StudentService)public studentService: StudentService) {
 
     activeRoute.url.subscribe((e) => {
-      if (e[e.length - 1].path === "online"){
-        this.online = true;
-      } else {
-        this.online = false;
-      }
-      if (e.length === 3){
-        console.log(e);
-        this.pickStudent(+e[1].path);
+      if (e.length === 2){
+
+        this.pickStudent(+e[1].path.split("?")[0]);
       }
 
 });
@@ -151,6 +146,6 @@ private setValues(id: number): void{
  backToNewStudent(): void{
   this.edit = false;
   this.newFormModel.reset();
-  this.router.navigateByUrl(`add/${this.activeRoute.snapshot.url[this.activeRoute.snapshot.url.length - 1].path}`);
+  this.router.navigate([`add`], { queryParams: this.isOffline ? { offline: true } : {} });
  }
 }

@@ -6,11 +6,9 @@ import { TableComponent } from "./TableFormModule/table/table.component";
 
 
 const routes: Routes = [
-  { path: "", redirectTo: "add/online", pathMatch: "full" },
-  { path: "add/online", component: TableComponent },
-  { path: "add/offline", component: TableComponent },
-  { path: "edit/:id/online", component: TableComponent, canActivate: [ScoreGuard] },
-  { path: "edit/:id/offline", component: TableComponent, canActivate: [ScoreGuard] },
+  { path: "", redirectTo: "add", pathMatch: "full" },
+  { path: "add", component: TableComponent },
+  { path: "edit/:id", component: TableComponent, canActivate: [ScoreGuard] },
   { path: "404", component: NotFoundComponent },
   { path: "**", redirectTo: "/404" },
 ];

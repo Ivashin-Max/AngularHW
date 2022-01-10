@@ -33,9 +33,9 @@ import { TableComponent } from "./table/table.component";
     {
       provide: StudentService,
       useFactory: (snapshot: ActivatedRoute, http: HttpClient): StudentService => {
-        return snapshot.snapshot.url[snapshot.snapshot.url.length - 1].path === "online" ?
-        new StudentsOnlineService(http) :
-        new StudentsOfflineService();
+        return snapshot.snapshot.queryParams["offline"] === "true" ?
+        new  StudentsOfflineService() :
+        new StudentsOnlineService(http);
       },
       deps: [ActivatedRoute, HttpClient]
     },

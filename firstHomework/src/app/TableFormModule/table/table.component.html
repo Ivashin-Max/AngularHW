@@ -25,15 +25,6 @@
       (change)="checkboxSelected = !checkboxSelected"
       >
     </div>
-    <div class="toggleLabel">
-
-      <button
-      (click)="onlineServicePick()">Online</button>
-      <button
-      (click)="studentServicePick()">Offline</button>
-      <button
-      (click)="test()">Test</button>
-    </div>
     <select [ngModel]="selected" (ngModelChange)="onChange($event)"  > 
       <option value='Поиск'>Поиск по имени или фамилии</option> 
       <option value='Фильтр по дате'>Фильтрация по дате рождения</option> 
@@ -42,7 +33,7 @@
   </div>
   <div class="table">
     <h1 >Таблица студентов</h1>
-    <h3>Режим работы: {{online===true?"online":"offline"}}</h3>
+
     <table  >
       <tr>
         <th class="pointer" (click)="sort('lastName')">Фамилия</th>
@@ -59,8 +50,7 @@
         [ngClass]="{'three': student.score<3 && checkboxSelected,
                     'deleted': student.deleted,
                     'finded': studentService.findedStudents.includes(student.id),
-                  'notInRange':notInRange.includes(student.id),
-                'table_odd':j }"
+                  'notInRange':notInRange.includes(student.id)}"
         > 
           <td tooltip>{{student.lastName | capitalizeWord | mrMrs}}</td>
           <td>{{student.name | capitalizeWord}}</td>
@@ -73,7 +63,7 @@
           <td>
             <button  
               class="table_edit"
-              routerLink="/edit/{{student.id}}/{{online===true?'online':'offline'}}" >
+              routerLink="/edit/{{student.id}}" [queryParams]="isOffline?{offline: 'true'}:{}" >
               Редактировать
             </button>
           </td>

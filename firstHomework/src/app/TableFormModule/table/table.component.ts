@@ -1,6 +1,6 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { StudentsOnlineService } from "../services/students-online.service";
+
 
 import { Istudent, StudentService } from "../services/studentsOffline.service";
 
@@ -12,27 +12,19 @@ import { Istudent, StudentService } from "../services/studentsOffline.service";
   templateUrl: "./table.component.html",
   changeDetection: ChangeDetectionStrategy.OnPush,
   styleUrls: ["./table.component.less"],
-  providers: [StudentService]
+  providers: []
 })
 export class TableComponent  implements OnInit{
 
-  online = true;
-  constructor(private ref: ChangeDetectorRef, public studentService: StudentsOnlineService, public router: Router, public activeRoute: ActivatedRoute){
-    activeRoute.url.subscribe((e) => {
-      if (e[e.length - 1].path === "online"){
-        this.online = true;
-      } else {
-        this.online = false;
-      }
-    });
-  }
+
+
+  constructor(private ref: ChangeDetectorRef, @Inject(StudentService)public studentService: StudentService, public router: Router, public activeRoute: ActivatedRoute){}
 
   ngOnInit(): void{
-    console.log(this.studentService.students);
+
     this.studentService.getAllStudents();
-
   }
-
+  isOffline = this.activeRoute.snapshot.queryParams["offline"];
   input = "";
   minDate = "";
   maxDate = "";
@@ -47,24 +39,9 @@ export class TableComponent  implements OnInit{
     message:"",
     error: false
   };
-  // findedStudents: number[] = [];
+
   notInRange: number[] = [];
 
-  onlineServicePick(): void{
-      this.router.navigateByUrl(`${this.activeRoute.snapshot.url.slice(0, this.activeRoute.snapshot.url.length - 1).map((el) => "/" + el.path ).join("")}/online`);
-
-  }
-  studentServicePick(): void{
-    this.router.navigateByUrl(`${this.activeRoute.snapshot.url.slice(0, this.activeRoute.snapshot.url.length - 1).map((el) => "/" + el.path ).join("")}/offline`);
-  }
-
-test(): void{
-  // console.log(this.activeRoute.snapshot.url.slice(0, this.activeRoute.snapshot.url.length - 1).map((el) => "/" + el.path ).join(""));
-  // console.log(this.isOnline());
-  // console.log(this.router.events);
-  // console.log(this.activeRoute.snapshot.url[this.activeRoute.snapshot.url.length - 1].path);
-  this.studentService.getAllStudents();
-}
 
   onChange(event: string): void{
     this.selected = event;
