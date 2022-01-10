@@ -1,4 +1,5 @@
 import { Injectable } from "@angular/core";
+import { Observable, of } from "rxjs";
 import studentsArr from "../../../assets/studentList.json";
 
 
@@ -32,8 +33,8 @@ export class StudentService {
     this.getAllStudents();
   }
 
-  getAllStudents(): void {
-
+  getAllStudents(): Observable<Istudent[]> {
+    return new Observable<Istudent[]>();
   }
 
   deleteStudent(id: number): void{}
@@ -55,9 +56,9 @@ export class StudentsOfflineService implements StudentService{
     this.getAllStudents();
   }
 
-  getAllStudents(): Istudent[] {
+  getAllStudents(): Observable<Istudent[]> {
     this.students = studentsArr.students;
-    return this.students;
+    return of(this.students);
   }
 
   newStudent(student: Istudent): void {

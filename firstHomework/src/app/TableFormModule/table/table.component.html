@@ -46,7 +46,7 @@
 
       <tr shine 
 
-        *ngFor="let student of studentService.students;  let j = odd"
+        *ngFor="let student of students | async;  let j = odd"
         [ngClass]="{'three': student.score<3 && checkboxSelected,
                     'deleted': student.deleted,
                     'finded': studentService.findedStudents.includes(student.id),

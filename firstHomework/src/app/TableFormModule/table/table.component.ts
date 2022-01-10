@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
+import { Observable } from "rxjs";
 
 
 import { Istudent, StudentService } from "../services/studentsOffline.service";
@@ -15,6 +16,7 @@ import { Istudent, StudentService } from "../services/studentsOffline.service";
   providers: []
 })
 export class TableComponent  implements OnInit{
+  students: Observable<Array<Istudent>> | undefined;
 
 
 
@@ -22,8 +24,9 @@ export class TableComponent  implements OnInit{
 
   ngOnInit(): void{
 
-    this.studentService.getAllStudents();
+   this.students = this.studentService.getAllStudents();
   }
+
   isOffline = this.activeRoute.snapshot.queryParams["offline"];
   input = "";
   minDate = "";
