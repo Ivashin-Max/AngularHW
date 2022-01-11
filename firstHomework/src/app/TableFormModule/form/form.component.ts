@@ -1,7 +1,7 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, NgZone } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms";
 import { formatDate } from "@angular/common" ;
-import { IstudentEdit, StudentService } from "../services/studentsOffline.service";
+import {  IstudentEdit, StudentService } from "../services/studentsOffline.service";
 import { ActivatedRoute, Router } from "@angular/router";
 
 
@@ -30,12 +30,11 @@ export class FormComponent  {
     errorMsg:""
    };
 
-  constructor(private ref: ChangeDetectorRef, public router: Router, public activeRoute: ActivatedRoute, @Inject(StudentService)public studentService: StudentService, private ngZone: NgZone) {
+  constructor(private ref: ChangeDetectorRef, public router: Router, public activeRoute: ActivatedRoute, @Inject(StudentService)public studentService: StudentService) {
 
     activeRoute.url.subscribe((e) => {
       if (e.length === 2){
-
-        this.pickStudent(+e[1].path.split("?")[0]);
+        this.pickStudent(+e[1].path);
       }
 
 });
@@ -94,13 +93,17 @@ pickStudent(id: number): void{
 }
 
 private setValues(id: number): void{
-  const studentToEdit = this.studentService.students.find((el) => el.id === +id);
-  if (studentToEdit !== undefined){
-  const correctDate = new Date(studentToEdit?.birthDate.split(".").reverse().join("-"));
-  this.newFormModel.get("birthDate")?.setValue(formatDate(correctDate, "yyyy-MM-dd", "en"));
-  this.newFormModel.get("fullName")?.setValue({ lastName: studentToEdit?.lastName, name: studentToEdit?.name, patr: studentToEdit?.patronymic });
-  this.newFormModel.get("score")?.setValue(studentToEdit?.score);
-  }
+
+  this.studentService.getAllStudents().subscribe((data) => {
+    const studentToEdit = data.find((el) => el.id === +id);
+      if (studentToEdit !== undefined){
+      const correctDate = new Date(studentToEdit?.birthDate.split(".").reverse().join("-"));
+      this.newFormModel.get("birthDate")?.setValue(formatDate(correctDate, "yyyy-MM-dd", "en"));
+      this.newFormModel.get("fullName")?.setValue({ lastName: studentToEdit?.lastName, name: studentToEdit?.name, patr: studentToEdit?.patronymic });
+      this.newFormModel.get("score")?.setValue(studentToEdit?.score);
+      }
+  });
+
 }
 
 

@@ -1,8 +1,5 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
-import { Observable } from "rxjs";
-
-
 import { Istudent, StudentService } from "../services/studentsOffline.service";
 
 
@@ -16,17 +13,13 @@ import { Istudent, StudentService } from "../services/studentsOffline.service";
   providers: []
 })
 export class TableComponent  implements OnInit{
-  students: Observable<Array<Istudent>> | undefined;
-
 
 
   constructor(private ref: ChangeDetectorRef, @Inject(StudentService)public studentService: StudentService, public router: Router, public activeRoute: ActivatedRoute){}
 
   ngOnInit(): void{
-
-   this.students = this.studentService.getAllStudents();
-   setInterval(() => this.ref.markForCheck(), 1000,
-   );
+  this.studentService.numberVar$.subscribe(() => this.ref.markForCheck());
+  this.studentService.getAllStudents();
   }
 
   isOffline = this.activeRoute.snapshot.queryParams["offline"];
@@ -46,7 +39,6 @@ export class TableComponent  implements OnInit{
   };
 
   notInRange: number[] = [];
-
 
   onChange(event: string): void{
     this.selected = event;

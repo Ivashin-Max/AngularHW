@@ -1,5 +1,5 @@
 import { Injectable } from "@angular/core";
-import { Observable, of } from "rxjs";
+import { Observable, of, Subject } from "rxjs";
 import studentsArr from "../../../assets/studentList.json";
 
 
@@ -25,9 +25,14 @@ export interface IstudentEdit{
 
 
 @Injectable( { providedIn: "root" } )
-export class StudentService {
+export class StudentService  {
   public students: Istudent[] = [];
   public findedStudents: number[] = [];
+  public numberVar = new Subject<number>();
+  public numberVar$ = this.numberVar.asObservable();
+  public updateNumSubject(newNumberVar: number): void {
+    this.numberVar.next(newNumberVar);
+  }
 
   constructor(){
     this.getAllStudents();
@@ -51,9 +56,16 @@ export class StudentService {
 export class StudentsOfflineService implements StudentService{
   public students: Istudent[] = [];
   public findedStudents: number[] = [];
+  public numberVar = new Subject<number>();
+  public numberVar$ = this.numberVar.asObservable();
+
+  public updateNumSubject(newNumberVar: number): void {
+    this.numberVar.next(newNumberVar);
+  }
 
   constructor(){
     this.getAllStudents();
+
   }
 
   getAllStudents(): Observable<Istudent[]> {
