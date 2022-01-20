@@ -1,7 +1,7 @@
 import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms";
 import { formatDate } from "@angular/common" ;
-import {  IstudentEdit, StudentService } from "../services/studentsOffline.service";
+import {  IstudentEdit, StudentService, StudentsOfflineService } from "../services/studentsOffline.service";
 import { ActivatedRoute, Router } from "@angular/router";
 
 
@@ -30,7 +30,7 @@ export class FormComponent  {
     errorMsg:""
    };
 
-  constructor(private ref: ChangeDetectorRef, public router: Router, public activeRoute: ActivatedRoute, @Inject(StudentService)public studentService: StudentService) {
+  constructor(private ref: ChangeDetectorRef, public router: Router, public activeRoute: ActivatedRoute, public studentService: StudentsOfflineService) {
 
     activeRoute.url.subscribe((e) => {
       if (e.length === 2){

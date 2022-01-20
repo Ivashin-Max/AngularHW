@@ -1,5 +1,10 @@
 import { Injectable } from "@angular/core";
+import { Store } from "@ngrx/store";
 import { Observable, of, Subject } from "rxjs";
+import { AddStudentAction, GetAllStudentsAction, GET_ALL_STUDENTS } from "src/app/store/action/students.actions";
+import { selectStudents } from "src/app/store/selector/students.selectors";
+// import { selectStudents } from "src/app/store/selector/students.selectors";
+import { AppState } from "src/app/store/state";
 import studentsArr from "../../../assets/studentList.json";
 
 
@@ -63,18 +68,17 @@ export class StudentsOfflineService implements StudentService{
     this.numberVar.next(newNumberVar);
   }
 
-  constructor(){
+  constructor(private store: Store<AppState>){
     this.getAllStudents();
-
   }
 
   getAllStudents(): Observable<Istudent[]> {
-    this.students = studentsArr.students;
-    return of(this.students);
+    this.store.dispatch(new GetAllStudentsAction(studentsArr.students));
+    return this.store.select(selectStudents);
   }
 
   newStudent(student: Istudent): void {
-    this.students.push(student);
+    this.store.dispatch(new AddStudentAction(student));
   }
 
   editStudent(id: number, newValues: IstudentEdit): number{
