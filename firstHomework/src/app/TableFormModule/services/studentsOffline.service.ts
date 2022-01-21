@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
 import { Observable  } from "rxjs";
-import { AddStudentAction, DeleteStudentAction, EditStudentAction, GetAllStudentsAction } from "src/app/store/action/students.actions";
+import { AddStudentAction, DeleteStudentAction, EditStudentAction, SetAllStudentsAction } from "src/app/store/action/students.actions";
 import { selectStudents } from "src/app/store/selector/students.selectors";
 // import { selectStudents } from "src/app/store/selector/students.selectors";
 import { AppState } from "src/app/store/state";
@@ -61,7 +61,7 @@ export class StudentsOfflineService implements StudentService{
   }
 
   getAllStudents(): Observable<Istudent[]> {
-    this.store.dispatch(new GetAllStudentsAction(studentsArr.students));
+    this.store.dispatch(new SetAllStudentsAction(studentsArr.students));
     return this.store.select(selectStudents);
   }
 

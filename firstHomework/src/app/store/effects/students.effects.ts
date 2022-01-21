@@ -5,7 +5,10 @@ import { Actions, Effect, ofType } from "@ngrx/effects";
 
 import { map, pluck } from "rxjs/operators";
 import { Istudent, StudentService } from "../../TableFormModule/services/studentsOffline.service";
-import { ADD_STUDENT } from "../action/students.actions";
+import { AddStudentSuccsessAction, ADD_STUDENT, SetAllStudentsAction } from "../action/students.actions";
+import { iif, of } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { environment } from "src/environments/environment";
 
 
 
@@ -13,12 +16,22 @@ import { ADD_STUDENT } from "../action/students.actions";
 @Injectable({ providedIn: "root" })
 export class StudentsEffects {
 
-  @Effect({ dispatch: false })
+  private studentsUrl = environment.studentsUrl;
+
+  @Effect( )
   newStudent$ = this.actions$.pipe(
     ofType(ADD_STUDENT),
     pluck("student"),
     map((student: Istudent) => {
-      this.studentsService.newStudent(student);
+      return iif(() => !!window.location.search,
+      of(new AddStudentSuccsessAction(student)),
+      this.http.post<Istudent[]>(this.studentsUrl, student).pipe(
+        map((res) => {
+          return new SetAllStudentsAction(res);
+        }),
+      ),
+      );
+
     }),
   );
 
@@ -27,6 +40,7 @@ export class StudentsEffects {
     private store: Store<AppState>,
     private actions$: Actions,
     private studentsService: StudentService,
+    private http: HttpClient,
   ) {
   }
 
