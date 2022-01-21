@@ -9,12 +9,13 @@ import { EffectsModule } from "@ngrx/effects";
 import { StudentsEffects } from "../store/effects/students.effects";
 
 import { FormComponent } from "./form/form.component";
-import { StudentsOnlineService } from "./services/students-online.service";
-import { StudentService, StudentsOfflineService } from "./services/studentsOffline.service";
 import { BirthdayCakeDirective, ShineDirective, TooltipDirective } from "./table/directives";
 import { CapitalizeWordPipe, MrMrsPipe } from "./table/pipes";
 import { TableComponent } from "./table/table.component";
 import { appReducers, AppState } from "../store/state";
+import { handleLog } from "../store/metareducer/logger";
+import { StudentsOnlineService } from "./services/students-online.service";
+import { StudentService, StudentsOfflineService } from "./services/studentsOffline.service";
 
 @NgModule({
   declarations: [
@@ -32,20 +33,22 @@ import { appReducers, AppState } from "../store/state";
     HttpClientModule,
     ReactiveFormsModule,
     RouterModule,
-    StoreModule.forRoot(appReducers),
+    StoreModule.forRoot(appReducers, {
+      metaReducers: [handleLog]
+    }),
     EffectsModule.forRoot([StudentsEffects]),
     StoreDevtoolsModule.instrument(),
   ],
   providers: [
-    // {
-    //   provide: StudentService,
-    //   useFactory: ( http: HttpClient, store: Store<AppState>): StudentService => {
-    //     return window.location.search ?
-    //     new  StudentsOfflineService() :
-    //     new StudentsOnlineService(http);
-    //   },
-    //   deps: [ HttpClient]
-    // },
+    {
+      provide: StudentService,
+      useFactory: ( http: HttpClient, store: Store<AppState>): StudentService => {
+        return window.location.search ?
+        new  StudentsOfflineService(store) :
+        new StudentsOnlineService(http, store);
+      },
+      deps: [HttpClient, Store]
+    },
   ],
   exports: [
     FormComponent,

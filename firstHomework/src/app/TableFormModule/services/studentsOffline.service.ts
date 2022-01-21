@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
 import { Store } from "@ngrx/store";
-import { Observable, of, Subject } from "rxjs";
-import { AddStudentAction, GetAllStudentsAction, GET_ALL_STUDENTS } from "src/app/store/action/students.actions";
+import { Observable  } from "rxjs";
+import { AddStudentAction, DeleteStudentAction, EditStudentAction, GetAllStudentsAction } from "src/app/store/action/students.actions";
 import { selectStudents } from "src/app/store/selector/students.selectors";
 // import { selectStudents } from "src/app/store/selector/students.selectors";
 import { AppState } from "src/app/store/state";
@@ -33,15 +33,7 @@ export interface IstudentEdit{
 export class StudentService  {
   public students: Istudent[] = [];
   public findedStudents: number[] = [];
-  public numberVar = new Subject<number>();
-  public numberVar$ = this.numberVar.asObservable();
-  public updateNumSubject(newNumberVar: number): void {
-    this.numberVar.next(newNumberVar);
-  }
 
-  constructor(){
-    this.getAllStudents();
-  }
 
   getAllStudents(): Observable<Istudent[]> {
     return new Observable<Istudent[]>();
@@ -61,15 +53,11 @@ export class StudentService  {
 export class StudentsOfflineService implements StudentService{
   public students: Istudent[] = [];
   public findedStudents: number[] = [];
-  public numberVar = new Subject<number>();
-  public numberVar$ = this.numberVar.asObservable();
 
-  public updateNumSubject(newNumberVar: number): void {
-    this.numberVar.next(newNumberVar);
-  }
+
+
 
   constructor(private store: Store<AppState>){
-    this.getAllStudents();
   }
 
   getAllStudents(): Observable<Istudent[]> {
@@ -82,21 +70,12 @@ export class StudentsOfflineService implements StudentService{
   }
 
   editStudent(id: number, newValues: IstudentEdit): number{
-    const studentToEdit = this.students.findIndex((el) => (el.id === id) && !el.deleted);
-    if (studentToEdit === -1) {
-     return -1;
-   }
-     this.students[studentToEdit].name = newValues.name;
-     this.students[studentToEdit].lastName = newValues.lastName;
-     this.students[studentToEdit].patronymic = newValues.patronymic;
-     this.students[studentToEdit].birthDate = newValues.birthDate;
-     this.students[studentToEdit].score = +newValues.score;
+    this.store.dispatch(new EditStudentAction(newValues, id));
      return 1;
   }
 
   deleteStudent(id: number): void{
-    const studentToDelete = this.students.findIndex((stud) => stud.id === id);
-    this.students[studentToDelete].deleted = true;
+    this.store.dispatch(new DeleteStudentAction(id));
   }
 
 }

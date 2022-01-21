@@ -38,46 +38,6 @@
     "score":1,
     "deleted": false,
     "inRange": true
-    },
-    {
-    "id": 5,
-    "lastName":"боширов",
-    "name": "дмитрий",
-    "patronymic": "алексеевич",
-    "birthDate": "23.08.1993",
-    "score":4,
-    "deleted": false,
-    "inRange": true
-    },
-    {
-    "id": 6,
-    "lastName":"громов",
-    "name": "виталий",
-    "patronymic": "егорович",
-    "birthDate": "27.12.2001",
-    "score":3,
-    "deleted": false,
-    "inRange": true
-    },
-    {
-    "id": 7,
-    "lastName":"зиновьева",
-    "name": "алена",
-    "patronymic": "борисовна",
-    "birthDate": "27.12.1999",
-    "score":2,
-    "deleted": false,
-    "inRange": true
-    },
-    {
-    "id": 8,
-    "lastName":"будова",
-    "name": "светлана",
-    "patronymic": "андреевна",
-    "birthDate": "21.01.1996",
-    "score":5,
-    "deleted": false,
-    "inRange": true
     }
   ]
 }

@@ -12,13 +12,4 @@ export const studentAdapter = createEntityAdapter<Istudent>({
 export const initialStudentsState: StudentsState = {
   students: []
 };
-// export const initialStudentsState: StudentsState = studentAdapter.
-// export interface ChatState extends EntityState<Message>{
-//   config?: {};
-// }
 
-// export const chatAdapter = createEntityAdapter<Message>({
-//   selectId: (item) => item.message
-// });
-
-// export const initialChatState: ChatState = chatAdapter.getInitialState();

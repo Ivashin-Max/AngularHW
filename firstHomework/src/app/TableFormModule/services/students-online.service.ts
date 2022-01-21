@@ -1,10 +1,13 @@
 
 import { Istudent, IstudentEdit, StudentService } from "./studentsOffline.service";
-// import studentsArr from "../../../assets/test.json";
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { Observable, Subject } from "rxjs";
+import { Observable } from "rxjs";
 import { environment } from "src/environments/environment";
+import { Store } from "@ngrx/store";
+import { AppState } from "src/app/store/state";
+import { GetAllStudentsAction } from "src/app/store/action/students.actions";
+import { selectStudents } from "src/app/store/selector/students.selectors";
 
 
 
@@ -13,45 +16,36 @@ export class StudentsOnlineService implements StudentService{
   private studentsUrl = environment.studentsUrl;
   public students: Istudent[] = [];
   public findedStudents: number[] = [];
-  public numberVar = new Subject<number>();
-  public numberVar$ = this.numberVar.asObservable();
-  public updateNumSubject(newNumberVar: number): void {
-    this.numberVar.next(newNumberVar);
-  }
 
-  constructor(public http: HttpClient){
-    this.getAllStudents().subscribe(() => this.updateNumSubject(1));
+
+
+  constructor(public http: HttpClient, private store: Store<AppState>){
   }
 
 
 
   getAllStudents(): Observable<Istudent[]> {
-   this.http.get<Istudent[]>(this.studentsUrl).subscribe((students) => this.students = students);
-   return this.http.get<Istudent[]>(this.studentsUrl);
+   this.http.get<Istudent[]>(this.studentsUrl).subscribe((students) => {
+     this.students = students;
+     return this.store.dispatch(new GetAllStudentsAction(students));
+});
+   return this.store.select(selectStudents);
   }
 
 
   deleteStudent(id: number): void {
-    this.http.get<Istudent[]>(`${this.studentsUrl}/${id.toString()}/del`).subscribe((students) => {
-      this.students = students;
-      this.updateNumSubject(1);
-    });
-
-
+    this.http.get<Istudent[]>(`${this.studentsUrl}/${id}/del`).subscribe((res) => {
+      this.store.dispatch(new GetAllStudentsAction(res));
+      });
   }
 
   newStudent(student: Istudent): void {
     this.http.post<Istudent[]>(this.studentsUrl, student).subscribe((res) => {
-      this.students = res;
-      this.updateNumSubject(1);
-      });
+      this.store.dispatch(new GetAllStudentsAction(res));
+    });
   }
 
   editStudent(id: number, newValues: IstudentEdit): number{
-    const studentToEdit = this.students.findIndex((el) => (el.id === id) && !el.deleted);
-    if (studentToEdit === -1) {
-     return -1;
-   }
    const editedStudent: IstudentEdit = {
     "name" : newValues.name,
     "lastName" : newValues.lastName,
@@ -61,8 +55,7 @@ export class StudentsOnlineService implements StudentService{
    };
 
     this.http.patch<Istudent[]>(`${this.studentsUrl}/${id.toString()}`, editedStudent).subscribe((res) => {
-      this.students = res;
-      this.updateNumSubject(1);
+      this.store.dispatch(new GetAllStudentsAction(res));
       });
      return 1;
   }

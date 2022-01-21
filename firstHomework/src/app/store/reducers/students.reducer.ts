@@ -1,5 +1,6 @@
 import { StudentsState, initialStudentsState } from "../students.state";
-import { ADD_STUDENT, GET_ALL_STUDENTS,  StudentActions } from "../action/students.actions";
+import { ADD_STUDENT, DELETE_STUDENT, EDIT_STUDENT, GET_ALL_STUDENTS,  StudentActions } from "../action/students.actions";
+
 
 
 
@@ -17,7 +18,26 @@ export const studentsReducer = (state = initialStudentsState, action: StudentAct
         students: [...state.students, action.student]
       };
     }
-//      return studentAdapter.addOne(action.students, state);
+    case EDIT_STUDENT: {
+      return {
+        ...state,
+        students: state.students.map((el) => {
+          if (el.id !== action.id){
+            return el;
+          }
+          return {
+            ...el,
+            ...action.newValues
+          };
+        })
+      };
+    }
+    case DELETE_STUDENT: {
+      return {
+        ...state,
+        students: state.students.filter((el) => el.id !== action.id)
+      };
+    }
     default: {
       return state;
     }

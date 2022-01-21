@@ -1,8 +1,12 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject } from "@angular/core";
+import { ChangeDetectionStrategy, ChangeDetectorRef, Component } from "@angular/core";
 import { AbstractControl, FormControl, FormGroup, Validators } from "@angular/forms";
-import { formatDate } from "@angular/common" ;
-import {  IstudentEdit, StudentService, StudentsOfflineService } from "../services/studentsOffline.service";
+import { formatDate, Location } from "@angular/common" ;
+import {  IstudentEdit, StudentService } from "../services/studentsOffline.service";
 import { ActivatedRoute, Router } from "@angular/router";
+import { Store } from "@ngrx/store";
+import { AppState } from "src/app/store/state";
+import { AddStudentAction } from "src/app/store/action/students.actions";
+import { selectStudents } from "src/app/store/selector/students.selectors";
 
 
 
@@ -21,7 +25,7 @@ export interface ValidationErrors {
   providers: []
 })
 export class FormComponent  {
-
+  idCounter = 0;
   isOffline = this.activeRoute.snapshot.queryParams["offline"];
   edit = false;
   modal = {
@@ -30,14 +34,26 @@ export class FormComponent  {
     errorMsg:""
    };
 
-  constructor(private ref: ChangeDetectorRef, public router: Router, public activeRoute: ActivatedRoute, public studentService: StudentsOfflineService) {
+  constructor(
+    private ref: ChangeDetectorRef,
+     public router: Router,
+      public activeRoute: ActivatedRoute,
+       public studentService: StudentService,
+        public store: Store<AppState>,
+        public location: Location) {
 
+    store.select(selectStudents).subscribe((data) => this.idCounter = data.length + 1);
     activeRoute.url.subscribe((e) => {
-      if (e.length === 2){
-        this.pickStudent(+e[1].path);
+        if (e.length === 2) {
+          this.pickStudent(+e[1].path);
+        }
+    });
+    location.onUrlChange((e) => {
+      const urlSegments = e.split("/");
+      if (urlSegments.length === 3){
+        this.pickStudent(+urlSegments[2]);
       }
-
-});
+    });
   }
 
 
@@ -58,6 +74,7 @@ export class FormComponent  {
   const date = new Date();
   const pastDate = new Date(date.setFullYear(date.getFullYear() - 10));
   const inputDate = new Date(control.value);
+
   if (inputDate > pastDate) {
       return { "recuiredDate<": pastDate.toLocaleDateString(),
                 "inputedDate": inputDate.toLocaleDateString() };
@@ -93,8 +110,7 @@ pickStudent(id: number): void{
 }
 
 private setValues(id: number): void{
-
-  this.studentService.getAllStudents().subscribe((data) => {
+  this.store.select(selectStudents).subscribe((data) => {
     const studentToEdit = data.find((el) => el.id === +id);
       if (studentToEdit !== undefined){
       const correctDate = new Date(studentToEdit?.birthDate.split(".").reverse().join("-"));
@@ -112,7 +128,7 @@ private setValues(id: number): void{
     if (this.newFormModel.valid){
       const correctDate = this.newFormModel.value.birthDate.split("-").reverse().join(".");
       const newStudent = {
-       "id": this.studentService.students.length + 1,
+       "id": this.idCounter,
        "lastName":this.newFormModel.value.fullName.lastName,
        "name": this.newFormModel.value.fullName.name,
        "patronymic": this.newFormModel.value.fullName.patr,
@@ -121,9 +137,8 @@ private setValues(id: number): void{
        "deleted": false,
        "inRange": true
        };
-      this.studentService.newStudent(newStudent);
+       this.store.dispatch( new AddStudentAction(newStudent));
     }
-    this.ref.markForCheck();
  }
 
  editStudent(): void{
@@ -150,6 +165,6 @@ private setValues(id: number): void{
  backToNewStudent(): void{
   this.edit = false;
   this.newFormModel.reset();
-  this.router.navigate([`add`], { queryParams: this.isOffline ? { offline: true } : {} });
+  this.location.replaceState(`add`, this.isOffline ? "offline=true" : "");
  }
 }

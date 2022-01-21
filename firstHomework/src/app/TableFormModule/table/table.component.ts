@@ -1,10 +1,10 @@
-import { ChangeDetectionStrategy, ChangeDetectorRef, Component, Inject, OnInit } from "@angular/core";
+import { ChangeDetectionStrategy, Component, OnInit } from "@angular/core";
 import { ActivatedRoute, Router } from "@angular/router";
 import { Store } from "@ngrx/store";
 import { Observable } from "rxjs";
 import { AppState } from "src/app/store/state";
-import { Istudent, StudentService, StudentsOfflineService } from "../services/studentsOffline.service";
-
+import { Istudent, StudentService } from "../services/studentsOffline.service";
+import { Location } from "@angular/common";
 
 
 
@@ -17,21 +17,21 @@ import { Istudent, StudentService, StudentsOfflineService } from "../services/st
 })
 export class TableComponent  implements OnInit{
 
+
+
   studentList$!: Observable<Istudent[]>;
 
 
   constructor(
-    private ref: ChangeDetectorRef,
-    public studentService: StudentsOfflineService,
+    public studentService: StudentService,
     public router: Router,
     public activeRoute: ActivatedRoute,
     private store: Store<AppState>,
+    private location: Location,
   ){}
 
   ngOnInit(): void{
-  this.studentService.numberVar$.subscribe(() => this.ref.markForCheck());
   this.studentList$ = this.studentService.getAllStudents();
-  // this.studentService.getAllStudents();
   }
 
   isOffline = this.activeRoute.snapshot.queryParams["offline"];
@@ -51,6 +51,10 @@ export class TableComponent  implements OnInit{
   };
 
   notInRange: number[] = [];
+
+  changeURL(id: number): void{
+    this.location.replaceState(`/edit/${id}`, this.isOffline ? "offline=true" : "");
+  }
 
   onChange(event: string): void{
     this.selected = event;
@@ -200,4 +204,5 @@ export class TableComponent  implements OnInit{
   }
 
 }
+
 

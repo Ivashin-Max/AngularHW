@@ -35,6 +35,7 @@
     <h1 >Таблица студентов</h1>
     <table  >
       <tr>
+        <th class="pointer" >ID</th>
         <th class="pointer" (click)="sort('lastName')">Фамилия</th>
         <th class="pointer" (click)="sort('name')">Имя</th>
         <th class="pointer" (click)="sort('patronymic')">Отчество</th>
@@ -51,6 +52,7 @@
                     'finded': studentService.findedStudents.includes(student.id),
                   'notInRange':notInRange.includes(student.id)}"
         > 
+        <td tooltip>{{student.id}}</td>
           <td tooltip>{{student.lastName | capitalizeWord | mrMrs}}</td>
           <td>{{student.name | capitalizeWord}}</td>
           <td>{{student.patronymic | capitalizeWord}}</td>
@@ -62,7 +64,8 @@
           <td>
             <button  
               class="table_edit"
-              routerLink="/edit/{{student.id}}" [queryParams]="isOffline?{offline: 'true'}:{}" >
+              (click)="changeURL(student.id)"
+            >
               Редактировать
             </button>
           </td>
@@ -76,7 +79,7 @@
       </tr>
     </table>
   </div>
-  <app-form></app-form>
+  <app-form ></app-form>
 </div>
   <div *ngIf="modal.isShown" class="shown">
     <div class="modal">
