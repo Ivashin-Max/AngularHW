@@ -8,13 +8,11 @@ export const {
   selectAll
 } = studentAdapter.getSelectors();
 
-const selectStudentsState = (state: AppState): any => state.students;
+const selectStudentsState = (state: AppState): StudentsState => state.students;
 
 
 export const selectStudents = createSelector(
   selectStudentsState,
  (state: StudentsState) => state.students);
 
-//  export const selectStudents = createSelector(
-//   selectStudentsState,
-//  (state: StudentsState) => state.students);
+
