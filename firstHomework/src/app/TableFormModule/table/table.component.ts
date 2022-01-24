@@ -127,12 +127,14 @@ export class TableComponent  implements OnInit{
       this.errorModal("Введите данные");
     } else {
     let counter = 0;
-     for (const student of this.studentService.students) {
-       if (student.lastName.toLocaleLowerCase() === value.toLocaleLowerCase() || student.name.toLocaleLowerCase() === value.toLocaleLowerCase()){
-         this.studentService.findedStudents.push(student.id);
-         counter++;
-       }
-     }
+    this.studentList$.subscribe((e) => {
+      for (const student of e) {
+        if (student.lastName.toLocaleLowerCase() === value.toLocaleLowerCase() || student.name.toLocaleLowerCase() === value.toLocaleLowerCase()){
+          this.studentService.findedStudents.push(student.id);
+          counter++;
+        }
+      }
+    });
      if (counter === 0 ){
       this.errorModal("Такого студента нет");
      }
