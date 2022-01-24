@@ -5,9 +5,11 @@ import { Action } from "@ngrx/store";
 
 export const SET_ALL_STUDENTS = "[STUDENT]SET_ALL_STUDENTS";
 export const ADD_STUDENT = "[STUDENT]ADD_STUDENT";
-export const ADD_STUDENT_SUCCSESS = "[STUDENT]ADD_STUDENT";
+export const ADD_STUDENT_SUCCSESS = "[STUDENT]ADD_STUDENT_SUCCSESS";
 export const EDIT_STUDENT = "[STUDENT]EDIT_STUDENT";
+export const EDIT_STUDENT_SUCCSESS = "[STUDENT]EDIT_STUDENT_SUCCSESS";
 export const DELETE_STUDENT = "[STUDENT]DELETE_STUDENT";
+export const DELETE_STUDENT_SUCCSESS = "[STUDENT]DELETE_STUDENT_SUCCSESS";
 
 export class SetAllStudentsAction implements Action {
   public readonly type = SET_ALL_STUDENTS;
@@ -36,6 +38,12 @@ export class EditStudentAction implements Action {
   constructor(public newValues: IstudentEdit, public id: number) {
   }
 }
+export class EditStudentSuccsessAction implements Action {
+  public readonly type = EDIT_STUDENT_SUCCSESS;
+
+  constructor(public newValues: IstudentEdit, public id: number) {
+  }
+}
 
 export class DeleteStudentAction implements Action {
   public readonly type = DELETE_STUDENT;
@@ -43,6 +51,13 @@ export class DeleteStudentAction implements Action {
   constructor(public id: number) {
   }
 }
+export class DeleteStudentSuccsessAction implements Action {
+  public readonly type = DELETE_STUDENT_SUCCSESS;
+
+  constructor(public id: number) {
+  }
+}
 
 
-export type StudentActions = AddStudentAction | AddStudentSuccsessAction | DeleteStudentAction | EditStudentAction | SetAllStudentsAction;
+
+export type StudentActions = AddStudentAction | AddStudentSuccsessAction | DeleteStudentAction | DeleteStudentSuccsessAction | EditStudentAction | EditStudentSuccsessAction | SetAllStudentsAction;
